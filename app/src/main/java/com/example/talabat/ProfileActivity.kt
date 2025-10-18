@@ -45,8 +45,6 @@ class ProfileActivity : AppCompatActivity() {
                     binding.inputPhone.setText(phone)
                     binding.inputEmail.setText(email)
 
-                    // Uncomment if you added email field
-                    // binding.inputEmail.setText(email)
                 } else {
                     Toast.makeText(this@ProfileActivity, "No profile data found", Toast.LENGTH_SHORT).show()
                 }
@@ -57,7 +55,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         })
         binding.btnBack.setOnClickListener {
-            // Log out the user (optional but recommended)
+
             auth.signOut()
 
             // Go back to LoginActivity
