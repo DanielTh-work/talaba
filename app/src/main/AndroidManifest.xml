@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,20 +17,24 @@
         android:theme="@style/Theme.Talabat"
         tools:targetApi="31">
         <activity
+            android:name=".SellerProfileActivity"
+            android:exported="false"
+            android:label="@string/title_activity_seller_profile"
+            android:theme="@style/Theme.Talabat" />
+        <activity
             android:name=".ProfileActivity"
-            android:exported="true" />
-
-        <!-- 🔹 RegisterActivity -->
+            android:exported="false" /> <!-- 🔹 RegisterActivity -->
         <activity
             android:name=".RegisterActivity"
-            android:exported="true" />
-
-        <!-- 🔹 LoginActivity (start screen when app opens) -->
+            android:exported="false" /> <!-- 🔹 LoginActivity (start screen when app opens) -->
+        <activity android:name=".BuyerProfileActivity" android:exported="false"/>
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

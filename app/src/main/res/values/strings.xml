@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">talabat</string>
+    <string-array name="roles_array">
+        <item>Buyer</item>
+        <item>Seller</item>
+    </string-array>
+    <string name="title_activity_seller_profile">SellerProfileActivity</string>
+
 </resources>

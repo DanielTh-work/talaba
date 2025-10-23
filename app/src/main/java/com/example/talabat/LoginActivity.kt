@@ -6,11 +6,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.talabat.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
 
         binding.btnLogin.setOnClickListener {
             val email = binding.inputEmail.text.toString()
@@ -30,19 +33,38 @@ class LoginActivity : AppCompatActivity() {
 
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    finish()
+                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                    // Check if user exists in Buyers node first
+                    database.getReference("Buyers").child(userId).get()
+                        .addOnSuccessListener { buyerSnapshot ->
+                            if (buyerSnapshot.exists()) {
+                                Toast.makeText(this, "Welcome Buyer!", Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(this, BuyerProfileActivity::class.java))
+                                finish()
+                            } else {
+                                // If not buyer, check in Sellers node
+                                database.getReference("Sellers").child(userId).get()
+                                    .addOnSuccessListener { sellerSnapshot ->
+                                        if (sellerSnapshot.exists()) {
+                                            Toast.makeText(this, "Welcome Seller!", Toast.LENGTH_SHORT).show()
+                                            startActivity(Intent(this, SellerProfileActivity::class.java))
+                                            finish()
+                                        } else {
+                                            Toast.makeText(this, "User role not found.", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                            }
+                        }
                 } else {
                     Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
 
-        // Register button → go to RegisterActivity
-        binding.txtRegister.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
+        // Go to RegisterActivity
+        binding.tvRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 }

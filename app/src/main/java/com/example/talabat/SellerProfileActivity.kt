@@ -1,28 +1,27 @@
 package com.example.talabat
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.talabat.databinding.ActivityProfileBinding
+import com.example.talabat.databinding.ActivitySellerProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import android.content.Intent
 
+class SellerProfileActivity : AppCompatActivity() {
 
-class ProfileActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityProfileBinding
+    private lateinit var binding: ActivitySellerProfileBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivitySellerProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
         dbRef = FirebaseDatabase.getInstance("https://talabat-cb6d9-default-rtdb.firebaseio.com/")
-            .getReference("users")
+            .getReference("Sellers")
 
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -33,7 +32,7 @@ class ProfileActivity : AppCompatActivity() {
 
         val uid = currentUser.uid
 
-
+        // Load seller data
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -44,32 +43,26 @@ class ProfileActivity : AppCompatActivity() {
                     binding.inputName.setText(name)
                     binding.inputPhone.setText(phone)
                     binding.inputEmail.setText(email)
-
                 } else {
-                    Toast.makeText(this@ProfileActivity, "No profile data found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SellerProfileActivity, "No profile data found", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ProfileActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SellerProfileActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+
+        // Back button → go to LoginActivity
         binding.btnBack.setOnClickListener {
-
             auth.signOut()
-
-            // Go back to LoginActivity
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
-
-            // Close ProfileActivity so it doesn’t stay open in background
             finish()
         }
 
-
-
-
+        // Save button → update Firebase data
         binding.btnSave.setOnClickListener {
             val newName = binding.inputName.text.toString().trim()
             val newPhone = binding.inputPhone.text.toString().trim()

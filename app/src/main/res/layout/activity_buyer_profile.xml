@@ -5,43 +5,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:background="#FFFFFF"
+    android:padding="24dp"
+    tools:context=".BuyerProfileActivity">
 
+    <!-- Circular Profile Image -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/circle_background"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:contentDescription="Buyer profile image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Upload Photo Text -->
+    <TextView
+        android:id="@+id/tvUploadPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Photo"
+        android:textColor="#FF6F00"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/profileImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Title -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile Page"
+        android:text="Buyer Profile"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/tvUploadPhoto"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp" />
+        android:layout_marginTop="16dp" />
 
+    <!-- Name Input -->
     <EditText
         android:id="@+id/inputName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Your Name"
+        android:hint="Full Name"
         android:inputType="textPersonName"
+        android:backgroundTint="#FF6F00"
+        android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
+    <!-- Phone Input -->
     <EditText
         android:id="@+id/inputPhone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Your Phone Number"
+        android:hint="Phone Number"
         android:inputType="phone"
+        android:backgroundTint="#FF6F00"
+        android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/inputName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-
+    <!-- Email Display (Disabled) -->
     <EditText
         android:id="@+id/inputEmail"
         android:layout_width="0dp"
@@ -50,31 +88,36 @@
         android:inputType="textEmailAddress"
         android:enabled="false"
         android:focusable="false"
-        android:backgroundTint="@android:color/darker_gray"
         android:textColor="@color/black"
+        android:backgroundTint="@android:color/darker_gray"
         android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/inputPhone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
+    <!-- Save Button -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Save Changes"
+        android:text="Save Buyer Details"
         android:backgroundTint="#FF6F00"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/inputEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp" />
 
+    <!-- Back Button -->
     <Button
         android:id="@+id/btnBack"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Back"
-        android:backgroundTint="#FF6F00"
+        android:text="Back to Login"
+        android:backgroundTint="#BDBDBD"
+        android:textColor="#000000"
         app:layout_constraintTop_toBottomOf="@id/btnSave"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
