@@ -129,7 +129,7 @@ class BuyerProfileActivity : AppCompatActivity() {
                 }
         }
 
-        // --- 5️⃣ Back button ---
+        // ---Back button ---
         binding.btnBack.setOnClickListener {
             auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)

@@ -104,7 +104,7 @@ class SellerProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // --- 4️⃣ Save updated text fields ---
+        // --- 4️⃣ Save updated tex---
         binding.btnSave.setOnClickListener {
             val newName = binding.inputName.text.toString().trim()
             val newPhone = binding.inputPhone.text.toString().trim()
