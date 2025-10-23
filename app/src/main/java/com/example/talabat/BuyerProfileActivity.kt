@@ -214,7 +214,7 @@ class BuyerProfileActivity : AppCompatActivity() {
             }
     }
 
-    // --- Helper to convert Uri → File ---
+
     object FileUtil {
         fun from(context: Context, uri: Uri): File {
             val inputStream = context.contentResolver.openInputStream(uri)

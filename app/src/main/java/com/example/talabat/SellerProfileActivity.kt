@@ -98,7 +98,6 @@ class SellerProfileActivity : AppCompatActivity() {
             }
         })
 
-        // --- 3️⃣ Upload Photo ---
         binding.btnUploadPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
