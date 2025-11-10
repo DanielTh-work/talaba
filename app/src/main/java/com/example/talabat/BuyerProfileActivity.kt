@@ -54,11 +54,11 @@ class BuyerProfileActivity : AppCompatActivity() {
 
         val uid = currentUser.uid
 
-        // --- 1️⃣ Initialize AWS S3 ---
+
         try {
             val awsCredentials = BasicAWSCredentials(
-                "AKIA6GUTHW7WVCKNRBF4",      // TODO: replace with your provided keys
-                "DPKY9wEnRJSrLv5czCQTzJ42ZjMaw6HoBfAjnEXd"
+                "",      // TODO: replace with your provided keys
+                ""
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
@@ -70,7 +70,7 @@ class BuyerProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "AWS Initialization Failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
-        // --- 2️⃣ Load data from Firebase ---
+
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -98,14 +98,14 @@ class BuyerProfileActivity : AppCompatActivity() {
             }
         })
 
-        // --- 3️⃣ Upload Photo ---
+
         binding.tvUploadPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // --- 4️⃣ Save updated text fields ---
+
         binding.btnSave.setOnClickListener {
             val newName = binding.inputName.text.toString().trim()
             val newPhone = binding.inputPhone.text.toString().trim()
@@ -129,7 +129,7 @@ class BuyerProfileActivity : AppCompatActivity() {
                 }
         }
 
-        // ---Back button ---
+
         binding.btnBack.setOnClickListener {
             auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
@@ -139,7 +139,7 @@ class BuyerProfileActivity : AppCompatActivity() {
         }
     }
 
-    // --- Handle Image Selection ---
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {

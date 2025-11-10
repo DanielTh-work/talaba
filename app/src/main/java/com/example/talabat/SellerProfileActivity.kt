@@ -28,7 +28,7 @@ class SellerProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
 
-    // AWS
+
     private lateinit var s3Client: AmazonS3Client
     private lateinit var transferUtility: TransferUtility
 
@@ -53,11 +53,11 @@ class SellerProfileActivity : AppCompatActivity() {
 
         val uid = currentUser.uid
 
-        // --- 1️⃣ Initialize AWS S3 ---
+
         try {
             val awsCredentials = BasicAWSCredentials(
-                "AKIA6GUTHW7WVCKNRBF4",      // ✅ replace with your team keys
-                "DPKY9wEnRJSrLv5czCQTzJ42ZjMaw6HoBfAjnEXd"
+               "",      // ✅ replace with your team keys
+                ""
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
@@ -69,7 +69,7 @@ class SellerProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "AWS Initialization Failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
-        // --- 2️⃣ Load data from Firebase ---
+
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -104,7 +104,7 @@ class SellerProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // --- 4️⃣ Save updated tex---
+
         binding.btnSave.setOnClickListener {
             val newName = binding.inputName.text.toString().trim()
             val newPhone = binding.inputPhone.text.toString().trim()
@@ -128,7 +128,7 @@ class SellerProfileActivity : AppCompatActivity() {
                 }
         }
 
-        // --- 5️⃣ Back button ---
+
         binding.btnBack.setOnClickListener {
             auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
@@ -138,7 +138,7 @@ class SellerProfileActivity : AppCompatActivity() {
         }
     }
 
-    // --- Handle Image Selection ---
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
@@ -150,12 +150,12 @@ class SellerProfileActivity : AppCompatActivity() {
         }
     }
 
-    // --- Upload to S3 and Save URL in Firebase (with old photo deletion) ---
+
     private fun uploadImageToS3(imageUri: Uri) {
         try {
             val uid = FirebaseAuth.getInstance().uid ?: return
 
-            // 1️⃣ Delete old photo if exists
+
             dbRef.child(uid).child("imageUrl").get().addOnSuccessListener { snapshot ->
                 val oldUrl = snapshot.value as? String
                 if (!oldUrl.isNullOrEmpty()) {
@@ -167,7 +167,7 @@ class SellerProfileActivity : AppCompatActivity() {
                     }.start()
                 }
 
-                // 2️⃣ Upload new photo
+
                 val fileName = "sellers/${uid}_${System.currentTimeMillis()}.jpg"
                 val file = FileUtil.from(this, imageUri)
 
@@ -214,7 +214,7 @@ class SellerProfileActivity : AppCompatActivity() {
             }
     }
 
-    // --- Helper to convert Uri → File ---
+
     object FileUtil {
         fun from(context: Context, uri: Uri): File {
             val inputStream = context.contentResolver.openInputStream(uri)
