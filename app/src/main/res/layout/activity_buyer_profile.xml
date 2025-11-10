@@ -9,7 +9,7 @@
     android:padding="24dp"
     tools:context=".BuyerProfileActivity">
 
-    <!-- Circular Profile Image -->
+
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="120dp"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Upload Photo Text -->
+
     <TextView
         android:id="@+id/tvUploadPhoto"
         android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
 
-    <!-- Title -->
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Name Input -->
+
     <EditText
         android:id="@+id/inputName"
         android:layout_width="0dp"
@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
-    <!-- Phone Input -->
+
     <EditText
         android:id="@+id/inputPhone"
         android:layout_width="0dp"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Email Display (Disabled) -->
+
     <EditText
         android:id="@+id/inputEmail"
         android:layout_width="0dp"
@@ -96,7 +96,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Save Button -->
+
     <Button
         android:id="@+id/btnSave"
         android:layout_width="0dp"
@@ -110,7 +110,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp" />
 
-    <!-- Back Button -->
+
     <Button
         android:id="@+id/btnBack"
         android:layout_width="0dp"

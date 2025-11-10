@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Create Firebase Authentication user
+
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -47,7 +47,7 @@ class RegisterActivity : AppCompatActivity() {
                             "role" to role
                         )
 
-                        // Save under either "Buyers" or "Sellers"
+
                         val userRef = when (role) {
                             "Buyer" -> database.getReference("Buyers").child(uid)
                             "Seller" -> database.getReference("Sellers").child(uid)
@@ -58,10 +58,10 @@ class RegisterActivity : AppCompatActivity() {
                             .addOnSuccessListener {
                                 Toast.makeText(this, "$role account created successfully!", Toast.LENGTH_SHORT).show()
 
-                                // ✅ Sign out after registration
+
                                 auth.signOut()
 
-                                // ✅ Redirect to Login page
+
                                 val intent = Intent(this, LoginActivity::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                                 startActivity(intent)

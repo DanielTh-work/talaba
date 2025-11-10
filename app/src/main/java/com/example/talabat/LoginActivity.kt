@@ -35,20 +35,22 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
 
-                    // Check if user exists in Buyers node first
+
                     database.getReference("Buyers").child(userId).get()
                         .addOnSuccessListener { buyerSnapshot ->
                             if (buyerSnapshot.exists()) {
                                 Toast.makeText(this, "Welcome Buyer!", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this, BuyerProfileActivity::class.java))
+
+                                startActivity(Intent(this, BuyerHomeActivity::class.java))
                                 finish()
                             } else {
-                                // If not buyer, check in Sellers node
+
                                 database.getReference("Sellers").child(userId).get()
                                     .addOnSuccessListener { sellerSnapshot ->
                                         if (sellerSnapshot.exists()) {
                                             Toast.makeText(this, "Welcome Seller!", Toast.LENGTH_SHORT).show()
-                                            startActivity(Intent(this, SellerProfileActivity::class.java))
+
+                                            startActivity(Intent(this, SellerHomeActivity::class.java))
                                             finish()
                                         } else {
                                             Toast.makeText(this, "User role not found.", Toast.LENGTH_LONG).show()
@@ -62,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Go to RegisterActivity
+
         binding.tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
