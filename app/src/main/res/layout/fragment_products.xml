@@ -24,14 +24,5 @@
         android:clipToPadding="false"
         android:paddingBottom="16dp"/>
 
-    <Button
-        android:id="@+id/btnAddProduct"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Product"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#FF6F00"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"/>
 
 </LinearLayout>
