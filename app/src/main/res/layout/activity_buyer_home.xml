@@ -9,7 +9,19 @@
     android:padding="32dp"
     tools:context=".BuyerHomeActivity">
 
+    <!-- Fragment Container for Shops / Products / Cart -->
+    <FrameLayout
+        android:id="@+id/fragment_container_buyer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAppTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
+
+    <!-- App title -->
     <TextView
         android:id="@+id/tvAppTitle"
         android:layout_width="wrap_content"
@@ -21,14 +33,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="64dp" />
+        android:layout_marginTop="48dp" />
 
-
+    <!-- Welcome text -->
     <TextView
         android:id="@+id/tvWelcomeMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:text="Welcome, User!"
         android:textSize="20sp"
         android:textAlignment="center"
@@ -38,6 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 
+    <!-- View Profile button -->
     <Button
         android:id="@+id/btnGoToProfile"
         android:layout_width="0dp"
@@ -46,12 +59,12 @@
         android:backgroundTint="#FF6F00"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/tvWelcomeMessage"
+        app:layout_constraintBottom_toTopOf="@id/btnLogout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp" />
+        android:layout_marginBottom="16dp" />
 
-
+    <!-- Logout button -->
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="0dp"
@@ -59,9 +72,10 @@
         android:text="Log Out"
         android:backgroundTint="#BDBDBD"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/btnGoToProfile"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

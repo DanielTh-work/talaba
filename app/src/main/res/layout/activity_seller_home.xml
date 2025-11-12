@@ -9,59 +9,71 @@
     android:padding="32dp"
     tools:context=".SellerHomeActivity">
 
-    <!-- Title / Logo -->
+    <!-- App Title -->
     <TextView
         android:id="@+id/tvAppTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Talabat Seller Dashboard"
+        android:textColor="#009688"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#009688"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="64dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <!-- Welcome Message -->
     <TextView
         android:id="@+id/tvWelcomeMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:text="Welcome, Seller!"
         android:textSize="20sp"
-        android:textAlignment="center"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/tvAppTitle"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAppTitle"/>
 
-    <!-- Button to Profile Activity -->
+    <!-- Button: Manage Seller Profile -->
     <Button
         android:id="@+id/btnGoToProfile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Manage Seller Profile"
-        android:backgroundTint="#009688"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/tvWelcomeMessage"
+        android:backgroundTint="#009688"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp" />
+        app:layout_constraintTop_toBottomOf="@id/tvWelcomeMessage"/>
 
-    <!-- Logout Button -->
+    <!-- Button: Logout -->
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Log Out"
-        android:backgroundTint="#BDBDBD"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/btnGoToProfile"
+        android:backgroundTint="#BDBDBD"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toBottomOf="@id/btnGoToProfile"/>
+
+    <!-- Fragment Container for Shop / Products / Add/Edit -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btnLogout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
