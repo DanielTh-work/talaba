@@ -57,8 +57,8 @@ class BuyerProfileActivity : AppCompatActivity() {
 
         try {
             val awsCredentials = BasicAWSCredentials(
-                "",      // TODO: replace with your provided keys
-                ""
+                "AKIA6GUTHW7WVCKNRBF4",      // ✅ replace with your team keys
+                "DPKY9wEnRJSrLv5czCQTzJ42ZjMaw6HoBfAjnEXd"
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
