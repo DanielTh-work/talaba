@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- App title (below toolbar) -->
+    <!-- App title -->
     <TextView
         android:id="@+id/tvAppTitle"
         android:layout_width="0dp"
@@ -49,8 +49,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
-    <!-- Fragment Container for Shops / Products / Cart -->
-    <!-- temporary debug tint; remove later -->
+    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/fragment_container_buyer"
         android:layout_width="0dp"
@@ -64,8 +63,7 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"/>
 
-
-    <!-- View Profile button (above logout) -->
+    <!-- View Profile button -->
     <Button
         android:id="@+id/btnGoToProfile"
         android:layout_width="0dp"
@@ -95,5 +93,18 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"/>
+
+    <!-- Cart button (bottom-right, functional, no pressed change) -->
+    <ImageButton
+        android:id="@+id/btnCart"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/baseline_shopping_cart_checkout_24"
+        android:contentDescription="Cart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="110dp"
+        android:layout_marginEnd="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
