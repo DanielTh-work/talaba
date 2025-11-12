@@ -3,6 +3,7 @@ package com.example.talabat
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.talabat.buyer.CartFragment
 import com.example.talabat.buyer.ShopsFragment
 import com.example.talabat.databinding.ActivityBuyerHomeBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -15,14 +16,17 @@ class BuyerHomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Inflate the binding and set the layout
+        // Inflate layout using ViewBinding
         binding = ActivityBuyerHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set toolbar as ActionBar
+        setSupportActionBar(binding.toolbarBuyer)
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
 
-        // Load ShopsFragment into fragment_container_buyer
+        // Load ShopsFragment by default
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_buyer, ShopsFragment())
@@ -30,8 +34,7 @@ class BuyerHomeActivity : AppCompatActivity() {
         }
 
         // Set welcome message
-        val welcomeMessage = "Welcome Buyer!"
-        binding.tvWelcomeMessage.text = welcomeMessage
+        binding.tvWelcomeMessage.text = "Welcome Buyer!"
 
         // Go to Buyer Profile
         binding.btnGoToProfile.setOnClickListener {
@@ -46,6 +49,14 @@ class BuyerHomeActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
+        }
+
+        // Cart button (bottom-right) click
+        binding.btnCart.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_buyer, CartFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 }

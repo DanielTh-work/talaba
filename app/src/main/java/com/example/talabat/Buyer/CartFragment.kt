@@ -80,7 +80,9 @@ class CartFragment : Fragment() {
         // For each seller, create orders under orders/{sellerId}/{pushId}
         itemsBySeller.forEach { (sellerId, items) ->
             if (sellerId.isEmpty()) return@forEach
+
             val ordersRef = db.child("orders").child(sellerId)
+
             items.forEach { cartItem ->
                 val orderRef = ordersRef.push()
                 val orderData = mapOf(
@@ -94,19 +96,35 @@ class CartFragment : Fragment() {
                     "timestamp" to System.currentTimeMillis()
                 )
                 orderRef.setValue(orderData)
-                // Decrease product quantity in products/{sellerId}/{productId}
-                val prodRef = db.child("products").child(sellerId).child(cartItem.product.productId!!)
+
+                // ✅ Correct path: sellers/{sellerId}/products/{productId}/quantity
+                val prodRef = db.child("sellers")
+                    .child(sellerId)
+                    .child("products")
+                    .child(cartItem.product.productId!!)
+
+                // Read, subtract, and update quantity
                 prodRef.child("quantity").get().addOnSuccessListener { snap ->
-                    val current = snap.getValue(Int::class.java) ?: cartItem.product.quantity
-                    val newVal = (current - cartItem.quantity).coerceAtLeast(0)
-                    prodRef.child("quantity").setValue(newVal)
+                    val currentQty = snap.getValue(Int::class.java) ?: cartItem.product.quantity
+                    val newQty = (currentQty - cartItem.quantity).coerceAtLeast(0)
+                    prodRef.child("quantity").setValue(newQty)
+                        .addOnSuccessListener {
+                            // Optional: show in log
+                            android.util.Log.d("Checkout", "Updated ${cartItem.product.name}: $currentQty → $newQty")
+                        }
+                        .addOnFailureListener { e ->
+                            android.util.Log.e("Checkout", "Failed to update quantity: ${e.message}")
+                        }
+                }.addOnFailureListener { e ->
+                    android.util.Log.e("Checkout", "Error reading quantity: ${e.message}")
                 }
             }
         }
 
-        // after placing orders clear cart and update UI
+        // Clear cart and refresh UI
         CartManager.clear()
         refreshUI()
         Toast.makeText(requireContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show()
     }
+
 }
