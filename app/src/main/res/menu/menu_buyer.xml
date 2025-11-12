@@ -4,6 +4,7 @@
 
     <item
         android:id="@+id/action_cart"
+        android:icon="@drawable/baseline_shopping_cart_checkout_24"
         android:title="Cart"
         app:showAsAction="ifRoom" />
 </menu>
