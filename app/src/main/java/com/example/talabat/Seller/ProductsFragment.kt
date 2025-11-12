@@ -62,6 +62,14 @@ class ProductsFragment : Fragment() {
         binding.rvProducts.adapter = adapter
 
         // Add new product button
+        binding.btnAddProduct.setOnClickListener {
+            val fragment = AddEditProductFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
         // Fetch products from Firebase
         fetchProducts()
 
