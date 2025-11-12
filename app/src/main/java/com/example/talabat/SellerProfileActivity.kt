@@ -56,7 +56,7 @@ class SellerProfileActivity : AppCompatActivity() {
 
         try {
             val awsCredentials = BasicAWSCredentials(
-                "",      // ✅ replace with your team keys
+                "",
                 ""
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
