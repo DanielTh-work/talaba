@@ -33,7 +33,12 @@ class ProductsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
+        binding.btnNav.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
         sellerId = arguments?.getString("sellerId") ?: ""
+
 
         adapter = ProductAdapter(products) { product ->
             if (product.quantity <= 0) {

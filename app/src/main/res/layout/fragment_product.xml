@@ -15,6 +15,7 @@
         android:textStyle="bold"
         android:paddingBottom="12dp"/>
 
+
     <!-- This ID must match your Kotlin code -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"

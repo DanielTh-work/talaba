@@ -56,8 +56,8 @@ class SellerProfileActivity : AppCompatActivity() {
 
         try {
             val awsCredentials = BasicAWSCredentials(
-                "AKIA6GUTHW7WVCKNRBF4",      // ✅ replace with your team keys
-                "DPKY9wEnRJSrLv5czCQTzJ42ZjMaw6HoBfAjnEXd"
+                "",
+                ""
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
@@ -127,6 +127,13 @@ class SellerProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+        binding.btnBBack.setOnClickListener {
+            val intent = Intent(this, SellerHomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish()
+        }
+
 
 
         binding.btnBack.setOnClickListener {

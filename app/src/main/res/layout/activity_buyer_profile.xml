@@ -9,6 +9,18 @@
     android:padding="24dp"
     tools:context=".BuyerProfileActivity">
 
+    <!-- 🔙 Back Button (slightly lower placement) -->
+    <ImageButton
+        android:id="@+id/btnBackNav"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_arrow_back"
+        android:contentDescription="Back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        app:tint="#000000" />
 
     <ImageView
         android:id="@+id/profileImage"
@@ -19,10 +31,9 @@
         android:clipToOutline="true"
         android:scaleType="centerCrop"
         android:contentDescription="Buyer profile image"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBackNav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
     <TextView
         android:id="@+id/tvUploadPhoto"
@@ -37,7 +48,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
 
-
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -50,7 +60,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
-
 
     <EditText
         android:id="@+id/inputName"
@@ -65,7 +74,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
-
     <EditText
         android:id="@+id/inputPhone"
         android:layout_width="0dp"
@@ -78,7 +86,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
-
 
     <EditText
         android:id="@+id/inputEmail"
@@ -96,7 +103,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-
     <Button
         android:id="@+id/btnSave"
         android:layout_width="0dp"
@@ -109,18 +115,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp" />
-
-
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Back to Login"
-        android:backgroundTint="#BDBDBD"
-        android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/btnSave"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

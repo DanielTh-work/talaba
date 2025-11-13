@@ -36,10 +36,8 @@ class AddEditProductFragment : Fragment() {
     private var isEditMode = false
     private var productId: String? = null
 
-    // AWS S3
     private lateinit var s3Client: AmazonS3Client
     private lateinit var transferUtility: TransferUtility
-
     private val PICK_IMAGE_REQUEST = 100
 
     override fun onCreateView(
@@ -47,6 +45,11 @@ class AddEditProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddEditProductBinding.inflate(inflater, container, false)
+
+        // --- Back button ---
+        binding.btnBackNav.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         // AWS Initialization
         try {
@@ -64,27 +67,24 @@ class AddEditProductFragment : Fragment() {
             Toast.makeText(context, "AWS Initialization Failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
-        // Edit mode check
+        // Check edit mode
         productId = arguments?.getString("productId")
         if (!productId.isNullOrEmpty()) {
             isEditMode = true
             loadProduct(productId!!)
         }
 
+        // Pick image
         binding.btnPickImage.setOnClickListener { openGallery() }
+
+        // Save product
         binding.btnSaveProduct.setOnClickListener {
             if (imageUri != null && imageUrl == null) {
-                // Disable button and wait for upload
                 Toast.makeText(context, "Uploading image, please wait...", Toast.LENGTH_SHORT).show()
-            } else if (imageUri != null && imageUrl != null) {
-                // Image uploaded, save product
-                saveProduct()
             } else {
-                // No new image selected, save with existing URL
                 saveProduct()
             }
         }
-
 
         return binding.root
     }
@@ -120,16 +120,11 @@ class AddEditProductFragment : Fragment() {
             )
 
             uploadObserver.setTransferListener(object : TransferListener {
-                override fun onStateChanged(id: Int, state: TransferState?) {if (state == TransferState.COMPLETED) {
-                    imageUrl = s3Client.getUrl("yalla-eat-bkt", fileName).toString()
-                    Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show()
-
-                    // Only auto-save if user just picked a new image
-                    if (!isEditMode || (isEditMode && imageUri != null)) {
-                        saveProduct()
+                override fun onStateChanged(id: Int, state: TransferState?) {
+                    if (state == TransferState.COMPLETED) {
+                        imageUrl = s3Client.getUrl("yalla-eat-bkt", fileName).toString()
+                        Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show()
                     }
-                }
-
                 }
 
                 override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {}
@@ -141,7 +136,6 @@ class AddEditProductFragment : Fragment() {
             Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun loadProduct(id: String) {
         val uid = auth.currentUser!!.uid

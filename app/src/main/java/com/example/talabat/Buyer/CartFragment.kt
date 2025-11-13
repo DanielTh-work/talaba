@@ -17,10 +17,19 @@ class CartFragment : Fragment() {
     private val db = FirebaseDatabase.getInstance().reference
     private val auth = FirebaseAuth.getInstance()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentCartBinding.inflate(inflater, container, false)
         setupRecycler()
         refreshUI()
+
+        // ✅ Toolbar back button functionality
+        binding.cartToolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
 
         binding.btnClearCart.setOnClickListener {
             CartManager.clear()
@@ -34,7 +43,8 @@ class CartFragment : Fragment() {
 
     private fun setupRecycler() {
         binding.recyclerViewCart.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = CartAdapter(CartManager.items.toMutableList(),
+        val adapter = CartAdapter(
+            CartManager.items.toMutableList(),
             onIncrease = {
                 CartManager.increase(it); refreshUI()
             },
@@ -43,22 +53,19 @@ class CartFragment : Fragment() {
             },
             onRemove = {
                 CartManager.remove(it); refreshUI()
-            })
+            }
+        )
         binding.recyclerViewCart.adapter = adapter
     }
 
     private fun refreshUI() {
-        // refresh adapter list
-        val adapter = binding.recyclerViewCart.adapter as? CartAdapter
-        (adapter?.let { (it as CartAdapter) } )?.apply {
-            // replace data by notifying dataset changed - easiest approach:
-            // recreate adapter with current items
-        }
-        // quick way: reset adapter
-        binding.recyclerViewCart.adapter = CartAdapter(CartManager.items.toMutableList(),
+        // Refresh the RecyclerView adapter with updated cart data
+        binding.recyclerViewCart.adapter = CartAdapter(
+            CartManager.items.toMutableList(),
             onIncrease = { CartManager.increase(it); refreshUI() },
             onDecrease = { CartManager.decrease(it); refreshUI() },
-            onRemove = { CartManager.remove(it); refreshUI() })
+            onRemove = { CartManager.remove(it); refreshUI() }
+        )
         binding.tvTotal.text = "Total: ${CartManager.totalPrice()}"
         binding.btnCheckout.isEnabled = !CartManager.isEmpty()
     }
@@ -80,7 +87,9 @@ class CartFragment : Fragment() {
         // For each seller, create orders under orders/{sellerId}/{pushId}
         itemsBySeller.forEach { (sellerId, items) ->
             if (sellerId.isEmpty()) return@forEach
+
             val ordersRef = db.child("orders").child(sellerId)
+
             items.forEach { cartItem ->
                 val orderRef = ordersRef.push()
                 val orderData = mapOf(
@@ -94,17 +103,31 @@ class CartFragment : Fragment() {
                     "timestamp" to System.currentTimeMillis()
                 )
                 orderRef.setValue(orderData)
-                // Decrease product quantity in products/{sellerId}/{productId}
-                val prodRef = db.child("products").child(sellerId).child(cartItem.product.productId!!)
+
+                // ✅ Correct path: sellers/{sellerId}/products/{productId}/quantity
+                val prodRef = db.child("sellers")
+                    .child(sellerId)
+                    .child("products")
+                    .child(cartItem.product.productId!!)
+
+                // Read, subtract, and update quantity
                 prodRef.child("quantity").get().addOnSuccessListener { snap ->
-                    val current = snap.getValue(Int::class.java) ?: cartItem.product.quantity
-                    val newVal = (current - cartItem.quantity).coerceAtLeast(0)
-                    prodRef.child("quantity").setValue(newVal)
+                    val currentQty = snap.getValue(Int::class.java) ?: cartItem.product.quantity
+                    val newQty = (currentQty - cartItem.quantity).coerceAtLeast(0)
+                    prodRef.child("quantity").setValue(newQty)
+                        .addOnSuccessListener {
+                            android.util.Log.d("Checkout", "Updated ${cartItem.product.name}: $currentQty → $newQty")
+                        }
+                        .addOnFailureListener { e ->
+                            android.util.Log.e("Checkout", "Failed to update quantity: ${e.message}")
+                        }
+                }.addOnFailureListener { e ->
+                    android.util.Log.e("Checkout", "Error reading quantity: ${e.message}")
                 }
             }
         }
 
-        // after placing orders clear cart and update UI
+        // Clear cart and refresh UI
         CartManager.clear()
         refreshUI()
         Toast.makeText(requireContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show()

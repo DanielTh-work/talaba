@@ -1,5 +1,6 @@
 package com.example.talabat.buyer
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -27,11 +28,20 @@ class ProductAdapter(
                 binding.imgProduct.setImageResource(android.R.color.darker_gray) // placeholder
             }
 
-            // Add to cart button
-            binding.btnAddToCart.setOnClickListener {
-                if (product.quantity <= 0) {
-                    Toast.makeText(binding.root.context, "Out of stock", Toast.LENGTH_SHORT).show()
-                } else {
+            // 🧠 Check stock status
+            if (product.quantity <= 0) {
+                // Out of stock: disable button, change text and color
+                binding.btnAddToCart.text = "Out of Stock"
+                binding.btnAddToCart.isEnabled = false
+                binding.btnAddToCart.setBackgroundColor(Color.GRAY)
+            } else {
+                // In stock: normal behavior
+                binding.btnAddToCart.text = "Add to Cart"
+                binding.btnAddToCart.isEnabled = true
+                binding.btnAddToCart.setBackgroundColor(Color.parseColor("#FF6F00"))
+
+                // Add to cart logic
+                binding.btnAddToCart.setOnClickListener {
                     onAddToCart(product)
                 }
             }

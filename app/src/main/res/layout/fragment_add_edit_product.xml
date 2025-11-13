@@ -7,87 +7,99 @@
     android:padding="24dp"
     android:background="#FFFFFF">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <!-- Title -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add / Edit Product"
-            android:textSize="24sp"
-            android:textColor="#009688"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"/>
-
-        <!-- Product Image -->
-        <ImageView
-            android:id="@+id/imgProduct"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center_horizontal"
-            android:background="#E0E0E0"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_edit"
-            android:contentDescription="Product Image"/>
-
-        <!-- Pick Image Button -->
-        <Button
-            android:id="@+id/btnPickImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pick Image"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#009688"
-            android:textColor="#FFFFFF"/>
-
-        <!-- Product Name -->
-        <EditText
-            android:id="@+id/etProductName"
+        <LinearLayout
+            android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Product Name"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:background="@drawable/product_item_bg"
-            android:inputType="text"/>
+            android:orientation="vertical">
 
-        <!-- Product Price -->
-        <EditText
-            android:id="@+id/etProductPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Price"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:background="@drawable/product_item_bg"
-            android:inputType="numberDecimal"/>
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add / Edit Product"
+                android:textSize="24sp"
+                android:textColor="#009688"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"/>
 
-        <!-- Product Quantity -->
-        <EditText
-            android:id="@+id/etProductQuantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Quantity"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:background="@drawable/product_item_bg"
-            android:inputType="number"/>
+            <ImageView
+                android:id="@+id/imgProduct"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#E0E0E0"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Product Image"/>
 
-        <!-- Save Button -->
-        <Button
-            android:id="@+id/btnSaveProduct"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save Product"
+            <Button
+                android:id="@+id/btnPickImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick Image"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#009688"
+                android:textColor="#FFFFFF"/>
+
+            <EditText
+                android:id="@+id/etProductName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Product Name"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:background="@drawable/product_item_bg"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/etProductPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Price"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:background="@drawable/product_item_bg"
+                android:inputType="numberDecimal"/>
+
+            <EditText
+                android:id="@+id/etProductQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Quantity"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:background="@drawable/product_item_bg"
+                android:inputType="number"/>
+
+            <Button
+                android:id="@+id/btnSaveProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Product"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#009688"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- 🔙 Back Navigation Button (bottom-left corner) -->
+        <ImageButton
+            android:id="@+id/btnBackNav"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@id/contentLayout"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#009688"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"/>
-    </LinearLayout>
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            app:tint="#000000" />
+    </RelativeLayout>
 </ScrollView>
