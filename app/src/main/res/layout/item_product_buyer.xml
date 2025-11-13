@@ -42,6 +42,7 @@
             android:text="Qty: 0"
             android:paddingTop="2dp"/>
 
+        <!-- ADD TO CART BUTTON -->
         <Button
             android:id="@+id/btnAddToCart"
             android:layout_width="match_parent"
@@ -50,6 +51,39 @@
             android:layout_marginTop="4dp"
             android:backgroundTint="#FF6F00"
             android:textColor="#FFFFFF"/>
+
+        <!-- QUANTITY CONTROL (HIDDEN INITIALLY) -->
+        <LinearLayout
+            android:id="@+id/qtyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnMinus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="-"/>
+
+            <TextView
+                android:id="@+id/tvQty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="18sp"
+                android:padding="10dp"/>
+
+            <Button
+                android:id="@+id/btnPlus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="+"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

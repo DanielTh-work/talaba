@@ -23,10 +23,11 @@ class CartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCartBinding.inflate(inflater, container, false)
+
         setupRecycler()
         refreshUI()
 
-        // ✅ Toolbar back button functionality
+        // Back button
         binding.cartToolbar.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -43,7 +44,7 @@ class CartFragment : Fragment() {
 
     private fun setupRecycler() {
         binding.recyclerViewCart.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = CartAdapter(
+        binding.recyclerViewCart.adapter = CartAdapter(
             CartManager.items.toMutableList(),
             onIncrease = {
                 CartManager.increase(it); refreshUI()
@@ -55,24 +56,23 @@ class CartFragment : Fragment() {
                 CartManager.remove(it); refreshUI()
             }
         )
-        binding.recyclerViewCart.adapter = adapter
     }
 
     private fun refreshUI() {
-        // Refresh the RecyclerView adapter with updated cart data
         binding.recyclerViewCart.adapter = CartAdapter(
             CartManager.items.toMutableList(),
             onIncrease = { CartManager.increase(it); refreshUI() },
             onDecrease = { CartManager.decrease(it); refreshUI() },
             onRemove = { CartManager.remove(it); refreshUI() }
         )
+
         binding.tvTotal.text = "Total: ${CartManager.totalPrice()}"
         binding.btnCheckout.isEnabled = !CartManager.isEmpty()
     }
 
     private fun placeOrder() {
         val buyerId = auth.currentUser?.uid ?: run {
-            Toast.makeText(requireContext(), "You must be logged in to checkout", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "You must be logged in", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -81,55 +81,51 @@ class CartFragment : Fragment() {
             return
         }
 
-        // Group cart items by seller
-        val itemsBySeller = CartManager.items.groupBy { it.product.sellerId ?: "" }
+        // Group items by seller
+        val itemsBySeller = CartManager.items.groupBy { it.product.sellerId }
 
-        // For each seller, create orders under orders/{sellerId}/{pushId}
         itemsBySeller.forEach { (sellerId, items) ->
             if (sellerId.isEmpty()) return@forEach
 
-            val ordersRef = db.child("orders").child(sellerId)
+            val sellerOrdersRef = db.child("orders").child(sellerId)
 
             items.forEach { cartItem ->
-                val orderRef = ordersRef.push()
+                val product = cartItem.product
+
+                // Create a new order entry
+                val orderRef = sellerOrdersRef.push()
                 val orderData = mapOf(
                     "orderId" to orderRef.key,
                     "buyerId" to buyerId,
-                    "productId" to (cartItem.product.productId ?: ""),
-                    "productName" to (cartItem.product.name ?: ""),
+                    "productId" to product.id,                // FIXED
+                    "productName" to product.name,
                     "quantity" to cartItem.quantity,
-                    "totalPrice" to cartItem.quantity * (cartItem.product.price ?: 0.0),
+                    "totalPrice" to cartItem.quantity * product.price,
                     "status" to "Pending",
                     "timestamp" to System.currentTimeMillis()
                 )
+
                 orderRef.setValue(orderData)
 
-                // ✅ Correct path: sellers/{sellerId}/products/{productId}/quantity
-                val prodRef = db.child("sellers")
+                // Update product stock in Firebase
+                val productRef = db.child("sellers")
                     .child(sellerId)
                     .child("products")
-                    .child(cartItem.product.productId!!)
+                    .child(product.id)                         // FIXED
 
-                // Read, subtract, and update quantity
-                prodRef.child("quantity").get().addOnSuccessListener { snap ->
-                    val currentQty = snap.getValue(Int::class.java) ?: cartItem.product.quantity
+                productRef.child("quantity").get().addOnSuccessListener { snap ->
+                    val currentQty = snap.getValue(Int::class.java) ?: product.quantity
                     val newQty = (currentQty - cartItem.quantity).coerceAtLeast(0)
-                    prodRef.child("quantity").setValue(newQty)
-                        .addOnSuccessListener {
-                            android.util.Log.d("Checkout", "Updated ${cartItem.product.name}: $currentQty → $newQty")
-                        }
-                        .addOnFailureListener { e ->
-                            android.util.Log.e("Checkout", "Failed to update quantity: ${e.message}")
-                        }
-                }.addOnFailureListener { e ->
-                    android.util.Log.e("Checkout", "Error reading quantity: ${e.message}")
+
+                    productRef.child("quantity").setValue(newQty)
                 }
             }
         }
 
-        // Clear cart and refresh UI
+        // Clear cart
         CartManager.clear()
         refreshUI()
+
         Toast.makeText(requireContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show()
     }
 }
