@@ -33,24 +33,31 @@ class ProductsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
+        binding.btnNav.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
         sellerId = arguments?.getString("sellerId") ?: ""
 
-        adapter = ProductAdapter(products) { product ->
-            if (product.quantity <= 0) {
-                Toast.makeText(requireContext(), "Out of stock", Toast.LENGTH_SHORT).show()
-                return@ProductAdapter
+        // Initialize Adapter
+        adapter = ProductAdapter(
+            products,
+            onAddToCart = { product, qty ->
+                CartManager.addItem(product, qty)
+                Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
+            },
+            onUpdateCart = { product, qty ->
+                CartManager.updateQuantity(product, qty)
+            },
+            onRemoveFromCart = { product ->
+                CartManager.removeItem(product)
             }
-            CartManager.addToCart(product)
-            Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
-        }
+        )
 
-        // Set up RecyclerView
-// Fixed code
+        // RecyclerView Setup
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvProducts.adapter = adapter
 
-
-        // Load products from Firebase
+        // Load Products
         loadProducts()
 
         return binding.root
@@ -62,18 +69,23 @@ class ProductsFragment : Fragment() {
         db.child("sellers").child(sellerId).child("products").get()
             .addOnSuccessListener { snapshot ->
                 products.clear()
+
                 for (child in snapshot.children) {
-                    val product = child.getValue(Product::class.java)
-                    if (product != null) {
-                        product.productId = child.key
-                        product.sellerId = sellerId
-                        products.add(product)
+                    val p = child.getValue(Product::class.java)
+
+                    if (p != null) {
+                        val productWithIds = p.copy(
+                            id = child.key ?: "",
+                            sellerId = sellerId
+                        )
+                        products.add(productWithIds)
                     }
                 }
+
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Failed to load products: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }
