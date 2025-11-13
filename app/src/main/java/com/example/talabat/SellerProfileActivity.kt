@@ -127,6 +127,13 @@ class SellerProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+        binding.btnBBack.setOnClickListener {
+            val intent = Intent(this, SellerHomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish()
+        }
+
 
 
         binding.btnBack.setOnClickListener {

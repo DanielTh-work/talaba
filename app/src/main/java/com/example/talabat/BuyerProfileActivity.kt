@@ -22,14 +22,12 @@ import java.io.File
 import java.io.FileOutputStream
 import com.amazonaws.services.s3.model.CannedAccessControlList
 
-
 class BuyerProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBuyerProfileBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
 
-    // AWS
     private lateinit var s3Client: AmazonS3Client
     private lateinit var transferUtility: TransferUtility
 
@@ -54,11 +52,15 @@ class BuyerProfileActivity : AppCompatActivity() {
 
         val uid = currentUser.uid
 
+        // 🔙 Back button navigation (same behavior as CartFragment)
+        binding.btnBackNav.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         try {
             val awsCredentials = BasicAWSCredentials(
-                "",      // ✅ replace with your team keys
-                ""
+                "",      // your AWS access key
+                ""       // your AWS secret key
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
@@ -69,7 +71,6 @@ class BuyerProfileActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "AWS Initialization Failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
-
 
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -88,8 +89,6 @@ class BuyerProfileActivity : AppCompatActivity() {
                             .load(imageUrl)
                             .into(binding.profileImage)
                     }
-                } else {
-                    Toast.makeText(this@BuyerProfileActivity, "No profile data found", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -98,13 +97,11 @@ class BuyerProfileActivity : AppCompatActivity() {
             }
         })
 
-
         binding.tvUploadPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
-
 
         binding.btnSave.setOnClickListener {
             val newName = binding.inputName.text.toString().trim()
@@ -115,10 +112,7 @@ class BuyerProfileActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val updates = mapOf(
-                "name" to newName,
-                "phone" to newPhone
-            )
+            val updates = mapOf("name" to newName, "phone" to newPhone)
 
             dbRef.child(uid).updateChildren(updates)
                 .addOnSuccessListener {
@@ -128,17 +122,7 @@ class BuyerProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
         }
-
-
-        binding.btnBack.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            finish()
-        }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -151,26 +135,17 @@ class BuyerProfileActivity : AppCompatActivity() {
         }
     }
 
-    // --- Upload to S3 and Save URL in Firebase ---
     private fun uploadImageToS3(imageUri: Uri) {
         try {
             val uid = FirebaseAuth.getInstance().uid ?: return
 
-            // 1️⃣  Get old image URL from Firebase
             dbRef.child(uid).child("imageUrl").get().addOnSuccessListener { snapshot ->
                 val oldUrl = snapshot.value as? String
-
-                // 2️⃣  Delete old photo from S3 if it exists
                 if (!oldUrl.isNullOrEmpty()) {
                     val oldKey = oldUrl.substringAfter("yalla-eat-bkt.s3.eu-north-1.amazonaws.com/")
-                    Thread {
-                        try {
-                            s3Client.deleteObject("yalla-eat-bkt", oldKey)
-                        } catch (_: Exception) { }
-                    }.start()
+                    Thread { try { s3Client.deleteObject("yalla-eat-bkt", oldKey) } catch (_: Exception) {} }.start()
                 }
 
-                // 3️⃣  Upload the new photo
                 val fileName = "buyers/${uid}_${System.currentTimeMillis()}.jpg"
                 val file = FileUtil.from(this, imageUri)
 
@@ -186,8 +161,6 @@ class BuyerProfileActivity : AppCompatActivity() {
                         if (state == TransferState.COMPLETED) {
                             val imageUrl = s3Client.getUrl("yalla-eat-bkt", fileName).toString()
                             saveImageUrlToFirebase(imageUrl)
-                        } else if (state == TransferState.FAILED) {
-                            Toast.makeText(this@BuyerProfileActivity, "Upload failed", Toast.LENGTH_SHORT).show()
                         }
                     }
                     override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {}
@@ -201,7 +174,6 @@ class BuyerProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun saveImageUrlToFirebase(url: String) {
         val uid = FirebaseAuth.getInstance().uid ?: return
         dbRef.child(uid).child("imageUrl").setValue(url)
@@ -209,11 +181,7 @@ class BuyerProfileActivity : AppCompatActivity() {
                 Glide.with(this).load(url).into(binding.profileImage)
                 Toast.makeText(this, "Profile photo updated!", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error saving URL: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
     }
-
 
     object FileUtil {
         fun from(context: Context, uri: Uri): File {

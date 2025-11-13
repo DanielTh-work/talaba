@@ -52,13 +52,9 @@ class SellerHomeActivity : AppCompatActivity() {
                 .commit()
         }
 
-        // Logout button
-        binding.btnLogout.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        binding.btnManageData.setOnClickListener {
+            val intent = Intent(this, SellerProfileActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 }

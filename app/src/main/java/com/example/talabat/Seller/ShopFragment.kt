@@ -36,7 +36,6 @@ class ShopFragment : Fragment() {
     private var imageUrl: String? = null
     private var shopExists = false
 
-    // AWS S3
     private lateinit var s3Client: AmazonS3Client
     private lateinit var transferUtility: TransferUtility
     private val PICK_IMAGE_REQUEST = 100
@@ -65,7 +64,12 @@ class ShopFragment : Fragment() {
 
         val uid = auth.currentUser!!.uid
 
-        // Check if shop already exists
+        // Back button: returns to previous fragment
+        binding.btnBackNav.setOnClickListener {
+            parentFragmentManager.popBackStack() // safely goes back
+        }
+
+        // Check if shop exists
         db.child("sellers").child(uid).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists() && snapshot.child("shopName").exists()) {
                 shopExists = true
@@ -99,8 +103,6 @@ class ShopFragment : Fragment() {
 
             if (imageUri != null && imageUrl == null) {
                 Toast.makeText(context, "Uploading image, please wait...", Toast.LENGTH_SHORT).show()
-            } else if (imageUri != null && imageUrl != null) {
-                saveShop(name, location)
             } else {
                 saveShop(name, location)
             }
@@ -133,7 +135,7 @@ class ShopFragment : Fragment() {
             val file = FileUtil.from(requireContext(), uri)
 
             val uploadObserver = transferUtility.upload(
-                "yalla-eat-bkt", // your S3 bucket
+                "yalla-eat-bkt",
                 fileName,
                 file,
                 CannedAccessControlList.PublicRead
@@ -170,9 +172,7 @@ class ShopFragment : Fragment() {
             ref.updateChildren(shopData as Map<String, Any>)
                 .addOnSuccessListener {
                     Toast.makeText(context, "Shop updated!", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, ProductsFragment())
-                        .commit()
+                    parentFragmentManager.popBackStack()
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -181,9 +181,7 @@ class ShopFragment : Fragment() {
             ref.setValue(shopData)
                 .addOnSuccessListener {
                     Toast.makeText(context, "Shop created!", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, ProductsFragment())
-                        .commit()
+                    parentFragmentManager.popBackStack()
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -191,7 +189,6 @@ class ShopFragment : Fragment() {
         }
     }
 
-    // same FileUtil helper used in AddEditProductFragment
     object FileUtil {
         fun from(context: Context, uri: Uri): File {
             val inputStream = context.contentResolver.openInputStream(uri)
