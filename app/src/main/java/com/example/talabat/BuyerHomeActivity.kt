@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.talabat.buyer.CartFragment
 import com.example.talabat.buyer.ShopsFragment
+import com.example.talabat.buyer.MyOrdersFragment   // ⭐ FIXED IMPORT
 import com.example.talabat.databinding.ActivityBuyerHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -30,6 +31,15 @@ class BuyerHomeActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_buyer, ShopsFragment())
+                .commit()
+        }
+
+        // ⭐ My Orders Button
+        binding.btnMyOrders.setOnClickListener {
+            val fragment = MyOrdersFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_buyer, fragment)
+                .addToBackStack(null)
                 .commit()
         }
 
