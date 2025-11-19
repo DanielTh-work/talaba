@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.talabat.databinding.FragmentCartBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.example.talabat.models.Order
 
 class CartFragment : Fragment() {
 
@@ -81,51 +82,62 @@ class CartFragment : Fragment() {
             return
         }
 
-        // Group items by seller
+        // Group products by seller → each seller gets ONE order
         val itemsBySeller = CartManager.items.groupBy { it.product.sellerId }
 
-        itemsBySeller.forEach { (sellerId, items) ->
-            if (sellerId.isEmpty()) return@forEach
+        val ordersRef = db.child("orders")
 
-            val sellerOrdersRef = db.child("orders").child(sellerId)
+        itemsBySeller.forEach { (sellerId, cartItems) ->
 
-            items.forEach { cartItem ->
-                val product = cartItem.product
+            val orderId = ordersRef.push().key!!
+            val itemsList = mutableListOf<Map<String, Any>>()
+            var totalPrice = 0.0
 
-                // Create a new order entry
-                val orderRef = sellerOrdersRef.push()
-                val orderData = mapOf(
-                    "orderId" to orderRef.key,
-                    "buyerId" to buyerId,
-                    "productId" to product.id,                // FIXED
-                    "productName" to product.name,
-                    "quantity" to cartItem.quantity,
-                    "totalPrice" to cartItem.quantity * product.price,
-                    "status" to "Pending",
-                    "timestamp" to System.currentTimeMillis()
+            cartItems.forEach { item ->
+                val map = mapOf(
+                    "productId" to item.product.id,
+                    "productName" to item.product.name,
+                    "quantity" to item.quantity,
+                    "price" to item.product.price
                 )
+                itemsList.add(map)
 
-                orderRef.setValue(orderData)
+                totalPrice += item.product.price * item.quantity
+            }
 
-                // Update product stock in Firebase
+            val order = Order(
+                orderId = orderId,
+                buyerId = buyerId,
+                sellerId = sellerId,
+                items = itemsList,
+                totalPrice = totalPrice,
+                status = "waiting",                    // IMPORTANT !!
+                deliveryOption = "pickup",             // temporary until we add UI
+                deliveryAddress = "",
+                deliveryPrice = 0.0
+            )
+
+            ordersRef.child(orderId).setValue(order)
+
+            // Reduce product quantities
+            cartItems.forEach { cartItem ->
                 val productRef = db.child("sellers")
                     .child(sellerId)
                     .child("products")
-                    .child(product.id)                         // FIXED
+                    .child(cartItem.product.id)
 
                 productRef.child("quantity").get().addOnSuccessListener { snap ->
-                    val currentQty = snap.getValue(Int::class.java) ?: product.quantity
+                    val currentQty = snap.getValue(Int::class.java) ?: 0
                     val newQty = (currentQty - cartItem.quantity).coerceAtLeast(0)
-
                     productRef.child("quantity").setValue(newQty)
                 }
             }
         }
 
-        // Clear cart
         CartManager.clear()
         refreshUI()
 
-        Toast.makeText(requireContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Order placed!", Toast.LENGTH_SHORT).show()
     }
+
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- ✅ Toolbar with back arrow -->
+    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/cartToolbar"
         android:layout_width="match_parent"
@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewCart"
             android:layout_width="match_parent"
@@ -30,6 +31,56 @@
             android:layout_weight="1"
             android:clipToPadding="false"/>
 
+        <!-- Delivery Options -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delivery Options"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingTop="16dp"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroupDelivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
+
+            <RadioButton
+                android:id="@+id/radioPickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pickup"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/radioDelivery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delivery"
+                android:layout_marginStart="24dp"/>
+        </RadioGroup>
+
+        <!-- Delivery Address -->
+        <EditText
+            android:id="@+id/etDeliveryAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter delivery address"
+            android:visibility="gone"
+            android:paddingTop="8dp"/>
+
+        <!-- Delivery Price -->
+        <TextView
+            android:id="@+id/tvDeliveryPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delivery Price: 0.0"
+            android:visibility="gone"
+            android:paddingTop="8dp"/>
+
+        <!-- Total -->
         <TextView
             android:id="@+id/tvTotal"
             android:layout_width="match_parent"
@@ -38,8 +89,9 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:gravity="end"
-            android:paddingTop="8dp"/>
+            android:paddingTop="12dp"/>
 
+        <!-- Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,5 +116,7 @@
                 android:backgroundTint="#FF6F00"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
+
     </LinearLayout>
+
 </LinearLayout>
