@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">talabat</string>
+    <string name="app_name"></string>
     <string-array name="roles_array">
         <item>Buyer</item>
         <item>Seller</item>
