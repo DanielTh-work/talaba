@@ -58,7 +58,7 @@ class OrderTrackingFragment : Fragment() {
             requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val builder = NotificationCompat.Builder(requireContext(), NotificationHelper.CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Order Update")
             .setContentText("Your order is now: $status")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
