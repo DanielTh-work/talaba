@@ -2,6 +2,7 @@ package com.example.talabat
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.talabat.databinding.ActivitySellerHomeBinding
 import com.example.talabat.seller.ProductsFragment
@@ -26,6 +27,7 @@ class SellerHomeActivity : AppCompatActivity() {
 
         binding.tvWelcomeMessage.text = "Welcome Seller!"
 
+        // Load default fragment
         if (savedInstanceState == null && userUID != null) {
             FirebaseDatabase.getInstance().reference.child("sellers").child(userUID).get()
                 .addOnSuccessListener { snapshot ->
@@ -41,7 +43,7 @@ class SellerHomeActivity : AppCompatActivity() {
                 }
         }
 
-        // Edit Shop
+        // Button listeners
         binding.btnGoToProfile.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ShopFragment())
@@ -49,13 +51,11 @@ class SellerHomeActivity : AppCompatActivity() {
                 .commit()
         }
 
-        // Manage Seller Data
         binding.btnManageData.setOnClickListener {
             val intent = Intent(this, SellerProfileActivity::class.java)
             startActivity(intent)
         }
 
-        // ⭐ Manage Orders (NEW)
         binding.btnSellerOrders.setOnClickListener {
             val fragment = SellerOrdersFragment()
             supportFragmentManager.beginTransaction()
@@ -63,5 +63,29 @@ class SellerHomeActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        // ⭐ Logout Button
+        binding.btnLogout.setOnClickListener {
+            showLogoutConfirmation()
+        }
+    }
+
+    private fun showLogoutConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { _, _ ->
+                logoutSeller()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun logoutSeller() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }

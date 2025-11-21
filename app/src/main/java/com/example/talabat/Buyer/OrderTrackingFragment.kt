@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.NotificationCompat      // ⭐ REQUIRED
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import com.example.talabat.R
 import com.example.talabat.databinding.FragmentOrderTrackingBinding
@@ -17,7 +19,7 @@ class OrderTrackingFragment : Fragment() {
     private lateinit var binding: FragmentOrderTrackingBinding
     private lateinit var dbRef: DatabaseReference
     private var orderId: String? = null
-    private var lastStatus: String = ""    // ⭐ prevents duplicate notifications
+    private var lastStatus: String = "" // Prevent duplicate notifications
 
     companion object {
         fun newInstance(orderId: String): OrderTrackingFragment {
@@ -51,9 +53,7 @@ class OrderTrackingFragment : Fragment() {
         return binding.root
     }
 
-    // ⭐ This sends the notification
     private fun sendStatusNotification(status: String) {
-
         val manager =
             requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -70,26 +70,95 @@ class OrderTrackingFragment : Fragment() {
     private fun listenForOrderUpdates() {
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
                 if (!snapshot.exists()) return
 
                 val status = snapshot.child("status").getValue(String::class.java) ?: "waiting"
                 val deliveryOption = snapshot.child("deliveryOption").getValue(String::class.java) ?: ""
                 val address = snapshot.child("deliveryAddress").getValue(String::class.java) ?: ""
+                val totalPrice = snapshot.child("totalPrice").getValue(Double::class.java) ?: 0.0
+                val itemsSnapshot = snapshot.child("items")
+                val sellerId = snapshot.child("sellerId").getValue(String::class.java) ?: ""
 
+                // Update status & delivery info
                 binding.tvStatus.text = "Status: $status"
                 binding.tvDeliveryOption.text = "Delivery Option: $deliveryOption"
                 binding.tvDeliveryAddress.text =
                     if (deliveryOption == "delivery") "Address: $address"
                     else "Pickup from shop"
 
-                // ⭐ Send notification only if status changed
+                // Notification on status change
                 if (lastStatus != status) {
-                    if (lastStatus != "") {  // skip first load
-                        sendStatusNotification(status)
-                    }
+                    if (lastStatus.isNotEmpty()) sendStatusNotification(status)
                     lastStatus = status
                 }
+
+                // Clear previous items
+                binding.llOrderItems.removeAllViews()
+
+                if (itemsSnapshot.exists() && sellerId.isNotEmpty()) {
+                    for (item in itemsSnapshot.children) {
+                        val productId = item.child("productId").getValue(String::class.java) ?: ""
+                        val quantity = item.child("quantity").getValue(Int::class.java) ?: 0
+                        val price = item.child("price").getValue(Double::class.java) ?: 0.0
+
+                        if (productId.isNotEmpty()) {
+                            // Fetch product name from seller's products
+                            FirebaseDatabase.getInstance().reference
+                                .child("sellers")
+                                .child(sellerId)
+                                .child("products")
+                                .child(productId)
+                                .child("name")
+                                .get()
+                                .addOnSuccessListener { productNameSnapshot ->
+                                    val productName = productNameSnapshot.getValue(String::class.java) ?: "Unknown"
+
+                                    val row = LinearLayout(requireContext()).apply {
+                                        orientation = LinearLayout.HORIZONTAL
+                                        layoutParams = LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                        )
+                                        setPadding(0, 6, 0, 6)
+                                    }
+
+                                    val tvName = TextView(requireContext()).apply {
+                                        text = productName
+                                        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2f)
+                                        textSize = 16f
+                                    }
+
+                                    val tvQtyPrice = TextView(requireContext()).apply {
+                                        text = "$quantity x $price"
+                                        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                                        textSize = 16f
+                                    }
+
+                                    val tvItemTotal = TextView(requireContext()).apply {
+                                        val itemTotal = quantity * price
+                                        text = "$itemTotal"
+                                        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                                        textSize = 16f
+                                    }
+
+                                    row.addView(tvName)
+                                    row.addView(tvQtyPrice)
+                                    row.addView(tvItemTotal)
+
+                                    binding.llOrderItems.addView(row)
+                                }
+                        }
+                    }
+                }
+
+                // Display total price directly from Firebase
+                val tvTotal = TextView(requireContext()).apply {
+                    text = "Total: $totalPrice EGP"
+                    textSize = 18f
+                    setPadding(0, 12, 0, 0)
+                }
+
+                binding.llOrderItems.addView(tvTotal)
             }
 
             override fun onCancelled(error: DatabaseError) {}

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.talabat.databinding.ActivitySellerProfileBinding
@@ -27,7 +28,6 @@ class SellerProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySellerProfileBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
-
 
     private lateinit var s3Client: AmazonS3Client
     private lateinit var transferUtility: TransferUtility
@@ -53,12 +53,9 @@ class SellerProfileActivity : AppCompatActivity() {
 
         val uid = currentUser.uid
 
-
+        // AWS S3 Initialization
         try {
-            val awsCredentials = BasicAWSCredentials(
-                "",
-                ""
-            )
+            val awsCredentials = BasicAWSCredentials("", "")
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
             transferUtility = TransferUtility.builder()
@@ -69,15 +66,17 @@ class SellerProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "AWS Initialization Failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
-
+        // Load profile data
         dbRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    val shopName = snapshot.child("shopName").getValue(String::class.java) ?: ""
                     val name = snapshot.child("name").getValue(String::class.java) ?: ""
                     val phone = snapshot.child("phone").getValue(String::class.java) ?: ""
                     val email = snapshot.child("email").getValue(String::class.java) ?: currentUser.email
                     val imageUrl = snapshot.child("imageUrl").getValue(String::class.java)
 
+                    binding.inputShopName.setText(shopName)
                     binding.inputName.setText(name)
                     binding.inputPhone.setText(phone)
                     binding.inputEmail.setText(email)
@@ -98,23 +97,26 @@ class SellerProfileActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnUploadPhoto.setOnClickListener {
+        // Upload photo click
+        binding.tvUploadPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-
+        // Save profile
         binding.btnSave.setOnClickListener {
+            val shopName = binding.inputShopName.text.toString().trim()
             val newName = binding.inputName.text.toString().trim()
             val newPhone = binding.inputPhone.text.toString().trim()
 
-            if (newName.isEmpty() || newPhone.isEmpty()) {
+            if (shopName.isEmpty() || newName.isEmpty() || newPhone.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val updates = mapOf(
+                "shopName" to shopName,
                 "name" to newName,
                 "phone" to newPhone
             )
@@ -127,24 +129,36 @@ class SellerProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
         }
-        binding.btnBBack.setOnClickListener {
-            val intent = Intent(this, SellerHomeActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
-            finish()
+
+        // Back button
+        binding.btnBackSeller.setOnClickListener {
+            finish() // simply go back to previous activity
         }
 
-
-
-        binding.btnBack.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            finish()
+        // ⭐ Logout Button
+        binding.btnLogout.setOnClickListener {
+            showLogoutConfirmation()
         }
     }
 
+    private fun showLogoutConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { _, _ ->
+                logoutSeller()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun logoutSeller() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -157,11 +171,9 @@ class SellerProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun uploadImageToS3(imageUri: Uri) {
         try {
             val uid = FirebaseAuth.getInstance().uid ?: return
-
 
             dbRef.child(uid).child("imageUrl").get().addOnSuccessListener { snapshot ->
                 val oldUrl = snapshot.value as? String
@@ -170,10 +182,9 @@ class SellerProfileActivity : AppCompatActivity() {
                     Thread {
                         try {
                             s3Client.deleteObject("yalla-eat-bkt", oldKey)
-                        } catch (_: Exception) { }
+                        } catch (_: Exception) {}
                     }.start()
                 }
-
 
                 val fileName = "sellers/${uid}_${System.currentTimeMillis()}.jpg"
                 val file = FileUtil.from(this, imageUri)
@@ -220,7 +231,6 @@ class SellerProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error saving URL: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 
     object FileUtil {
         fun from(context: Context, uri: Uri): File {

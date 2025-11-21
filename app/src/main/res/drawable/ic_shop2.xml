@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Shop roof -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M3,10 L12,2 L21,10 H3 Z"/>
+
+    <!-- Shop building -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M4,10 H20 V20 H4 V10 Z"/>
+
+    <!-- Door -->
+    <path
+        android:fillColor="#CCCCCC"
+        android:pathData="M10,14 H14 V20 H10 V14 Z"/>
+
+    <!-- Optional window -->
+    <path
+        android:fillColor="#CCCCCC"
+        android:pathData="M6,12 H9 V15 H6 V12 Z M15,12 H18 V15 H15 V12 Z"/>
+</vector>

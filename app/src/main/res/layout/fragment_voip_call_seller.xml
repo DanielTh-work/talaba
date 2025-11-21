@@ -21,7 +21,7 @@
     <ImageButton
         android:id="@+id/btnBack"
         android:src="@drawable/ic_arrow_back"
-        android:background="#FF6F00"
+        android:background="#4F7C82"
         android:contentDescription="Back"
         android:layout_width="40dp"
         android:layout_height="40dp"/>

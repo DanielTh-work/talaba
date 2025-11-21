@@ -1,61 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFF8F2"
+    android:padding="16dp">
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/btnBackNav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:backgroundTint="#FF6F00"
-        android:src="@drawable/ic_arrow_back"
-        android:contentDescription="Back"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- Shop Name -->
-    <EditText
-        android:id="@+id/etShopName"
-        android:hint="Shop Name"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
 
-    <!-- Shop Location Dropdown -->
-    <Spinner
-        android:id="@+id/spLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/btnBackNav"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:background="@drawable/circle_button_background"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            android:padding="12dp"
+            app:tint="#FFFFFF" />
 
-    <!-- Create / Update Shop -->
-    <Button
-        android:id="@+id/btnCreateShop"
-        android:text="Create Shop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#FF6F00"
-        android:layout_marginTop="16dp"/>
+        <!-- Shop Name -->
+        <EditText
+            android:id="@+id/etShopName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Shop Name"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext"
+            android:drawableStart="@drawable/ic_shop"
+            android:drawablePadding="12dp"/>
 
-    <!-- Shop Image -->
-    <ImageView
-        android:id="@+id/ivShopImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"/>
+        <!-- Shop Location Dropdown -->
+        <Spinner
+            android:id="@+id/spLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_spinner"
+            android:padding="12dp"/>
 
-    <!-- Select Image Button -->
-    <Button
-        android:id="@+id/btnSelectImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Image"
-        android:backgroundTint="#FF6F00"
-        android:layout_marginTop="8dp"/>
+        <!-- Shop Image Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/ivShopImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Shop Image"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Select Image Button -->
+        <Button
+            android:id="@+id/btnSelectImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Image"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_button"
+            android:textColor="#FFFFFF"
+            android:padding="14dp"/>
+
+        <!-- Create / Update Shop Button -->
+        <Button
+            android:id="@+id/btnCreateShop"
+            android:text="Create Shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_button"
+            android:textColor="#FFFFFF"
+            android:padding="16dp"/>
+
+    </LinearLayout>
+</ScrollView>
