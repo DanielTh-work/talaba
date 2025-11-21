@@ -9,22 +9,19 @@
     android:padding="32dp"
     tools:context=".SellerHomeActivity">
 
-    <!-- App Title -->
     <TextView
         android:id="@+id/tvAppTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Talabat Seller Dashboard"
-        android:textColor="#009688"
+        android:textColor="#FF6F00"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- Welcome Message -->
     <TextView
         android:id="@+id/tvWelcomeMessage"
         android:layout_width="0dp"
@@ -32,48 +29,58 @@
         android:layout_marginTop="24dp"
         android:text="Welcome, Seller!"
         android:textSize="20sp"
-        android:textColor="#000000"
         android:textAlignment="center"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/tvAppTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAppTitle"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Button: Manage Seller Profile -->
     <Button
         android:id="@+id/btnGoToProfile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Manage Seller Profile"
+        android:text="Manage Shop Profile"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:backgroundTint="#009688"
+        android:backgroundTint="#FF6F00"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcomeMessage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvWelcomeMessage"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Button: Logout -->
     <Button
-        android:id="@+id/btnLogout"
+        android:id="@+id/btnManageData"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Log Out"
-        android:textColor="#000000"
-        android:backgroundTint="#BDBDBD"
+        android:text="Manage Seller Profile"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#DD3F00"
+        app:layout_constraintTop_toBottomOf="@id/btnGoToProfile"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnGoToProfile"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Fragment Container for Shop / Products / Add/Edit -->
+    <Button
+        android:id="@+id/btnSellerOrders"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Manage Orders"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#FF6F00"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btnManageData"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btnLogout"
+        app:layout_constraintTop_toBottomOf="@id/btnSellerOrders"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

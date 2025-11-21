@@ -46,7 +46,7 @@ class ShopsFragment : Fragment() {
                 val sellerId = child.key
                 val name = child.child("shopName").getValue(String::class.java)
                     ?: child.child("name").getValue(String::class.java)
-                val imageUrl = child.child("shopImage").getValue(String::class.java) ?: ""
+                val imageUrl = child.child("shopImageUrl").getValue(String::class.java) ?: "" // ✅ FIXED
                 shops.add(
                     Shop(
                         shopId = sellerId,
@@ -61,4 +61,5 @@ class ShopsFragment : Fragment() {
             Toast.makeText(requireContext(), "Failed to load shops: ${it.message}", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

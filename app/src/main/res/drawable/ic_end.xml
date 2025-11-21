@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Phone shape -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.7,14.89 16.13,14.84 16.44,15.05L19.13,16.66C19.5,16.9 19.66,17.38 19.52,17.83C18.93,20.05 16.7,22 14.41,22C9.29,22 5,17.71 5,12.59C5,10.3 6.95,8.07 9.17,7.48C9.62,7.34 10.1,7.5 10.34,7.87L11.95,10.56C12.16,10.87 12.11,11.3 11.82,11.59L9.62,13.79Z"/>
+
+    <!-- Diagonal slash for "No Answer" -->
+    <path
+        android:fillColor="#FF0000"
+        android:strokeWidth="2"
+        android:strokeColor="#FF0000"
+        android:pathData="M4,4 L20,20"/>
+</vector>

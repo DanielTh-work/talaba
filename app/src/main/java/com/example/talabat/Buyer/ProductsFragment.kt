@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.talabat.databinding.FragmentProductsBinding
@@ -33,24 +34,74 @@ class ProductsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
-        sellerId = arguments?.getString("sellerId") ?: ""
 
-        adapter = ProductAdapter(products) { product ->
-            if (product.quantity <= 0) {
-                Toast.makeText(requireContext(), "Out of stock", Toast.LENGTH_SHORT).show()
-                return@ProductAdapter
-            }
-            CartManager.addToCart(product)
-            Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
+        binding.btnNav.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        // Set up RecyclerView
-// Fixed code
+        sellerId = arguments?.getString("sellerId") ?: ""
+
+        // -----------------------------------
+        // ⭐ ProductAdapter with single-seller rule
+        // -----------------------------------
+        adapter = ProductAdapter(
+            products,
+
+            onAddToCart = { product, qty ->
+
+                val productSellerId = product.sellerId
+
+                // Case 1: Cart empty → lock seller + add
+                if (CartManager.currentSellerId == null) {
+                    CartManager.currentSellerId = productSellerId
+                    CartManager.addItem(product, qty)
+                    Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
+                    adapter.notifyDataSetChanged()
+                    return@ProductAdapter
+                }
+
+                // Case 2: Same seller → add normally
+                if (CartManager.currentSellerId == productSellerId) {
+                    CartManager.addItem(product, qty)
+                    Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
+                    adapter.notifyDataSetChanged()
+                    return@ProductAdapter
+                }
+
+                // Case 3: Different seller → warning dialog
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Different Shop")
+                    .setMessage("Your cart contains items from another shop. Adding this item will clear your cart. Continue?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        CartManager.clear()
+                        CartManager.currentSellerId = productSellerId
+                        CartManager.addItem(product, qty)
+
+                        Toast.makeText(requireContext(), "Cart cleared and item added.", Toast.LENGTH_SHORT).show()
+                        adapter.notifyDataSetChanged()
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.dismiss()
+                        adapter.notifyDataSetChanged() // Reset UI
+                    }
+                    .show()
+            },
+
+            // Update qty
+            onUpdateCart = { product, qty ->
+                CartManager.updateQuantity(product, qty)
+            },
+
+            // Remove
+            onRemoveFromCart = { product ->
+                CartManager.removeItem(product)
+            }
+        )
+
+        // RecyclerView setup
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvProducts.adapter = adapter
 
-
-        // Load products from Firebase
         loadProducts()
 
         return binding.root
@@ -61,19 +112,25 @@ class ProductsFragment : Fragment() {
 
         db.child("sellers").child(sellerId).child("products").get()
             .addOnSuccessListener { snapshot ->
+
                 products.clear()
+
                 for (child in snapshot.children) {
-                    val product = child.getValue(Product::class.java)
-                    if (product != null) {
-                        product.productId = child.key
-                        product.sellerId = sellerId
-                        products.add(product)
+                    val p = child.getValue(Product::class.java)
+
+                    if (p != null) {
+                        val updated = p.copy(
+                            id = child.key ?: "",
+                            sellerId = sellerId
+                        )
+                        products.add(updated)
                     }
                 }
+
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Failed to load products: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }

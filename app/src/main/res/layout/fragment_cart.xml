@@ -3,58 +3,99 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <TextView
-        android:id="@+id/tvCartTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your Cart"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"/>
-
-    <TextView
-        android:id="@+id/tvTotal"
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/cartToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Total: 0.0"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:gravity="end"
-        android:paddingTop="8dp"/>
+        android:background="#4F7C82"
+        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+        app:title="Your Cart"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        android:contentDescription="Cart Toolbar, navigate back" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingTop="8dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnClearCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear Cart"
-            android:backgroundTint="#BDBDBD"
-            android:textColor="#000000"
-            android:layout_marginEnd="8dp"/>
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:contentDescription="List of items in your cart" />
 
-        <Button
-            android:id="@+id/btnCheckout"
-            android:layout_width="wrap_content"
+        <!-- Delivery Address -->
+        <EditText
+            android:id="@+id/etDeliveryAddress"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Checkout"
-            android:backgroundTint="#009688"
-            android:textColor="#FFFFFF"/>
+            android:hint="Enter delivery address"
+            android:paddingTop="8dp"
+            android:visibility="gone"
+            android:contentDescription="Delivery address input" />
+
+        <!-- Delivery Price -->
+        <TextView
+            android:id="@+id/tvDeliveryPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="Delivery Price: 0.0"
+            android:visibility="gone"
+            android:contentDescription="Current delivery price" />
+
+        <!-- Total -->
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingTop="12dp"
+            android:text="Total: 0.0"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:contentDescription="Total price for all items in your cart" />
+
+        <!-- Buttons: Clear Cart and Checkout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
+
+            <!-- Clear Cart -->
+            <Button
+                android:id="@+id/btnClearCart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#BDBDBD"
+                android:text="Clear Cart"
+                android:textColor="#000000"
+                android:contentDescription="Clear all items from cart" />
+
+            <!-- Checkout -->
+            <Button
+                android:id="@+id/btnCheckout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#4F7C82"
+                android:text="Checkout"
+                android:textColor="#FFFFFF"
+                android:contentDescription="Proceed to checkout" />
+        </LinearLayout>
+
+        <!-- Cart Button -->
     </LinearLayout>
 </LinearLayout>

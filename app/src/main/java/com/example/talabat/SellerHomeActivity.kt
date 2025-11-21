@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.talabat.databinding.ActivitySellerHomeBinding
 import com.example.talabat.seller.ProductsFragment
 import com.example.talabat.seller.ShopFragment
+import com.example.talabat.seller.SellerOrdersFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -23,42 +24,44 @@ class SellerHomeActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         val userUID = auth.currentUser?.uid
 
-        val welcomeMessage = "Welcome Seller!"
-        binding.tvWelcomeMessage.text = welcomeMessage
+        binding.tvWelcomeMessage.text = "Welcome Seller!"
 
-        // Decide which fragment to show initially
         if (savedInstanceState == null && userUID != null) {
             FirebaseDatabase.getInstance().reference.child("sellers").child(userUID).get()
                 .addOnSuccessListener { snapshot ->
                     val fragment = if (snapshot.child("shopName").exists()) {
-                        // Shop exists → show products
                         ProductsFragment()
                     } else {
-                        // No shop → show shop creation
                         ShopFragment()
                     }
+
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .commit()
                 }
         }
 
-        // Button to edit shop
+        // Edit Shop
         binding.btnGoToProfile.setOnClickListener {
-            // Navigate to ShopFragment for editing
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ShopFragment())
                 .addToBackStack(null)
                 .commit()
         }
 
-        // Logout button
-        binding.btnLogout.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        // Manage Seller Data
+        binding.btnManageData.setOnClickListener {
+            val intent = Intent(this, SellerProfileActivity::class.java)
             startActivity(intent)
-            finish()
+        }
+
+        // ⭐ Manage Orders (NEW)
+        binding.btnSellerOrders.setOnClickListener {
+            val fragment = SellerOrdersFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 }
