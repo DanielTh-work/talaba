@@ -8,10 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.example.talabat.R
 import com.example.talabat.databinding.FragmentShopBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -40,20 +40,31 @@ class ShopFragment : Fragment() {
     private lateinit var transferUtility: TransferUtility
     private val PICK_IMAGE_REQUEST = 100
 
+    private val locations = listOf("Nasr City", "Rehab", "5th Settlement", "Masr el gedida", "Shobra", "Maadi")
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentShopBinding.inflate(inflater, container, false)
 
+        // Initialize Spinner Adapter
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            locations
+        )
+        binding.spLocation.adapter = adapter
+
         // Initialize AWS
         try {
             val awsCredentials = BasicAWSCredentials(
-                "AKIA6GUTHW7WVCKNRBF4", // ⚠️ replace with your access key
-                "DPKY9wEnRJSrLv5czCQTzJ42ZjMaw6HoBfAjnEXd" // ⚠️ replace with your secret key
+                "AKIA6GUTHW7WVCKNRBF4",
+                "DPKY9wEnRJSrLv5czCQTzJ42ZjMaw6HoBfAjnEXd"
             )
             s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.EU_NORTH_1))
             s3Client.setEndpoint("s3.eu-north-1.amazonaws.com")
+
             transferUtility = TransferUtility.builder()
                 .context(requireContext())
                 .s3Client(s3Client)
@@ -64,12 +75,12 @@ class ShopFragment : Fragment() {
 
         val uid = auth.currentUser!!.uid
 
-        // Back button: returns to previous fragment
+        // Back button
         binding.btnBackNav.setOnClickListener {
-            parentFragmentManager.popBackStack() // safely goes back
+            parentFragmentManager.popBackStack()
         }
 
-        // Check if shop exists
+        // Load shop if exists
         db.child("sellers").child(uid).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists() && snapshot.child("shopName").exists()) {
                 shopExists = true
@@ -78,7 +89,10 @@ class ShopFragment : Fragment() {
                 val photo = snapshot.child("shopImageUrl").getValue(String::class.java)
 
                 binding.etShopName.setText(name)
-                binding.etShopLocation.setText(location)
+
+                val index = locations.indexOf(location)
+                if (index != -1) binding.spLocation.setSelection(index)
+
                 binding.btnCreateShop.text = "Update Shop"
 
                 if (!photo.isNullOrEmpty()) {
@@ -88,24 +102,18 @@ class ShopFragment : Fragment() {
             }
         }
 
-        // Image picker
         binding.btnSelectImage.setOnClickListener { openGallery() }
 
-        // Save / Update shop
         binding.btnCreateShop.setOnClickListener {
             val name = binding.etShopName.text.toString().trim()
-            val location = binding.etShopLocation.text.toString().trim()
+            val location = binding.spLocation.selectedItem.toString()
 
-            if (name.isEmpty() || location.isEmpty()) {
-                Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty()) {
+                Toast.makeText(context, "Please enter shop name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (imageUri != null && imageUrl == null) {
-                Toast.makeText(context, "Uploading image, please wait...", Toast.LENGTH_SHORT).show()
-            } else {
-                saveShop(name, location)
-            }
+            saveShop(name, location)
         }
 
         return binding.root

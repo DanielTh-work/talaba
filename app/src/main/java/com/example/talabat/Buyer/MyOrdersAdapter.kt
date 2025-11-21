@@ -26,6 +26,7 @@ class MyOrdersAdapter(
 
         holder.binding.tvOrderId.text = "Order: ${order.orderId}"
         holder.binding.tvOrderStatus.text = "Status: ${order.status}"
+        holder.binding.tvDeliveryFee.text="Delivery Fee: ${order.deliveryPrice} EGP"
         holder.binding.tvOrderTotal.text = "Total: ${order.totalPrice} EGP"
 
         holder.binding.btnTrack.setOnClickListener {

@@ -40,16 +40,16 @@
     </RadioGroup>
 
     <!-- Address input for delivery -->
-    <EditText
-        android:id="@+id/etAddress"
-        android:hint="Enter delivery address"
+    <Spinner
+        android:id="@+id/spinnerAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:padding="14dp"
-        android:background="@drawable/rounded_edittext"
         android:visibility="gone"
-        android:contentDescription="Input delivery address" />
+        android:alpha="0.0"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:contentDescription="Select delivery location"/>
 
     <!-- Delivery Fee display -->
     <TextView
