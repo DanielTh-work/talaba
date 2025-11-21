@@ -28,6 +28,7 @@ class MyOrdersFragment : Fragment() {
 
         binding.rvMyOrders.layoutManager = LinearLayoutManager(requireContext())
 
+        setupBackButton()
         loadOrders()
 
         return binding.root
@@ -65,5 +66,12 @@ class MyOrdersFragment : Fragment() {
             .replace(R.id.fragment_container_buyer, fragment)
             .addToBackStack(null)
             .commit()
+    }
+    private fun setupBackButton() {
+        binding.btnBack.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_buyer, ShopsFragment())
+                .commit()
+        }
     }
 }

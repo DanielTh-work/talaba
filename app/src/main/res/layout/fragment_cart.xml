@@ -4,18 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/cartToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FF6F00"
+        android:background="#4F7C82"
         android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
         app:title="Your Cart"
         app:titleTextColor="@android:color/white"
-        app:navigationIcon="@drawable/ic_arrow_back" />
+        app:navigationIcon="@drawable/ic_arrow_back"
+        android:contentDescription="Cart Toolbar, navigate back" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,9 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:clipToPadding="false" />
-
-        <!-- Delivery Options -->
+            android:clipToPadding="false"
+            android:contentDescription="List of items in your cart" />
 
         <!-- Delivery Address -->
         <EditText
@@ -40,7 +41,8 @@
             android:layout_height="wrap_content"
             android:hint="Enter delivery address"
             android:paddingTop="8dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="Delivery address input" />
 
         <!-- Delivery Price -->
         <TextView
@@ -49,7 +51,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:text="Delivery Price: 0.0"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:contentDescription="Current delivery price" />
 
         <!-- Total -->
         <TextView
@@ -60,9 +63,10 @@
             android:paddingTop="12dp"
             android:text="Total: 0.0"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:contentDescription="Total price for all items in your cart" />
 
-        <!-- Buttons -->
+        <!-- Buttons: Clear Cart and Checkout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,6 +74,7 @@
             android:orientation="horizontal"
             android:paddingTop="8dp">
 
+            <!-- Clear Cart -->
             <Button
                 android:id="@+id/btnClearCart"
                 android:layout_width="wrap_content"
@@ -77,17 +82,20 @@
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#BDBDBD"
                 android:text="Clear Cart"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:contentDescription="Clear all items from cart" />
 
+            <!-- Checkout -->
             <Button
                 android:id="@+id/btnCheckout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#FF6F00"
+                android:backgroundTint="#4F7C82"
                 android:text="Checkout"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:contentDescription="Proceed to checkout" />
         </LinearLayout>
 
+        <!-- Cart Button -->
     </LinearLayout>
-
 </LinearLayout>

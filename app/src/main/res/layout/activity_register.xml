@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#FFF8F2"
     android:padding="24dp"
     tools:context=".RegisterActivity">
 
@@ -14,104 +14,115 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Account"
+        android:text="Create New Account"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="#222222"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp"/>
 
-    <!-- Full Name Input -->
-    <EditText
-        android:id="@+id/inputName"
+    <!-- Card container for inputs -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Full Name"
-        android:inputType="textPersonName"
-        android:padding="12dp"
-        android:drawableStart="@drawable/ic_person"
-        android:drawablePadding="12dp"
-        android:backgroundTint="#FF6F00"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        android:backgroundTint="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Email Input -->
-    <EditText
-        android:id="@+id/inputEmail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:drawableStart="@drawable/ic_email"
-        android:drawablePadding="12dp"
-        android:backgroundTint="#FF6F00"
-        app:layout_constraintTop_toBottomOf="@id/inputName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <!-- Phone Number Input -->
-    <EditText
-        android:id="@+id/inputPhone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Phone Number"
-        android:inputType="phone"
-        android:padding="12dp"
-        android:drawableStart="@drawable/ic_phone"
-        android:drawablePadding="12dp"
-        android:backgroundTint="#FF6F00"
-        app:layout_constraintTop_toBottomOf="@id/inputEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+            <!-- Full Name Input -->
+            <EditText
+                android:id="@+id/inputName"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Full Name"
+                android:inputType="textPersonName"
+                android:drawableStart="@drawable/ic_person"
+                android:drawablePadding="12dp"
+                android:padding="14dp"
+                android:background="@drawable/input_bg"/>
 
-    <!-- Password Input -->
-    <EditText
-        android:id="@+id/inputPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="12dp"
-        android:drawableStart="@drawable/ic_lock"
-        android:drawablePadding="12dp"
-        android:backgroundTint="#FF6F00"
-        app:layout_constraintTop_toBottomOf="@id/inputPhone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+            <!-- Email Input -->
+            <EditText
+                android:id="@+id/inputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="12dp"
+                android:padding="14dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"/>
 
-    <!-- Role Selection Spinner -->
-    <Spinner
-        android:id="@+id/roleSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#FF6F00"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/inputPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:entries="@array/roles_array" />
+            <!-- Phone Number Input -->
+            <EditText
+                android:id="@+id/inputPhone"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Phone Number"
+                android:inputType="phone"
+                android:drawableStart="@drawable/ic_phone"
+                android:drawablePadding="12dp"
+                android:padding="14dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"/>
+
+            <!-- Password Input -->
+            <EditText
+                android:id="@+id/inputPassword"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="12dp"
+                android:padding="14dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/input_bg"/>
+
+            <!-- Role Spinner -->
+            <Spinner
+                android:id="@+id/roleSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:background="@drawable/input_bg"
+                android:entries="@array/roles_array"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Register Button -->
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:text="Register"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:backgroundTint="#FF6F00"
+        android:backgroundTint="#4F7C82"
+        android:layout_marginStart="44dp"
+        android:layout_marginEnd="44dp"
         android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/roleSpinner"
+        app:cornerRadius="20dp"
+        app:layout_constraintTop_toBottomOf="@id/cardContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
