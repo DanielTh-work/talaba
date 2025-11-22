@@ -68,8 +68,8 @@
                 android:src="@drawable/ic_plus"
                 android:backgroundTint="#009688"
                 android:contentDescription="Increase Quantity"
-                android:tint="#FFFFFF"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginBottom="4dp"
+                card_view:tint="#FFFFFF" />
 
             <!-- Quantity Display -->
             <TextView

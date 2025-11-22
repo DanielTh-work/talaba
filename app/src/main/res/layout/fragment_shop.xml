@@ -33,6 +33,7 @@
             android:padding="16dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_edittext"
+            app:cornerRadius="20dp"
             android:drawableStart="@drawable/ic_shop"
             android:drawablePadding="12dp"/>
 
@@ -68,7 +69,8 @@
             android:layout_height="wrap_content"
             android:text="Select Image"
             android:layout_marginTop="12dp"
-            android:background="@drawable/rounded_button"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#4F7C82"
             android:textColor="#FFFFFF"
             android:padding="14dp"/>
 
@@ -79,7 +81,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_button"
+            android:backgroundTint="#4F7C82"
+            app:cornerRadius="20dp"
             android:textColor="#FFFFFF"
             android:padding="16dp"/>
 

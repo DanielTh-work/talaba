@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Wallet body -->
+    <path
+        android:fillColor="#007C91"
+        android:pathData="M3,7h18c1.1,0 2,0.9 2,2v8c0,1.1 -0.9,2 -2,2H3c-1.1,0 -2,-0.9 -2,-2V9c0,-1.1 0.9,-2 2,-2zM3,17h18v-8H3v8z"/>
+
+    <!-- Wallet flap -->
+    <path
+        android:fillColor="#00BFA5"
+        android:pathData="M3,7h18v2H3V7z"/>
+
+    <!-- Button / closure -->
+    <path
+        android:fillColor="#00BFA5"
+        android:pathData="M18,11a1.5,1.5 0 1,0 0,3 1.5,1.5 0 0,0 0,-3z"/>
+</vector>

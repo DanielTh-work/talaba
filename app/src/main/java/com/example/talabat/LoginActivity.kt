@@ -63,6 +63,11 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+        // 🔹 NEW — Delivery App button
+        binding.btnDeliveryApp.setOnClickListener {
+            startActivity(Intent(this, com.example.talabat.Delivery.DeliveryLogin::class.java))
+
+        }
 
 
         binding.tvRegister.setOnClickListener {

@@ -37,9 +37,14 @@
         <activity
             android:name=".BuyerProfileActivity"
             android:exported="false" />
+        <activity android:name=".Delivery.DeliveryProfileActivity" />
+
+        <activity android:name=".Delivery.DeliveryLogin" />
+        <activity android:name=".Delivery.DeliveryHomeActivity" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

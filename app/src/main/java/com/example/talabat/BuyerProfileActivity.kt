@@ -96,6 +96,22 @@ class BuyerProfileActivity : AppCompatActivity() {
                 Toast.makeText(this@BuyerProfileActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+        // Fetch balance from DeliveryVolunteers in real-time
+        val volunteerRef = FirebaseDatabase.getInstance()
+            .getReference("DeliveryVolunteers")
+            .child(uid)
+
+        volunteerRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val balance = snapshot.child("balance").getValue(Int::class.java) ?: 0
+                binding.inputBalance.setText(balance.toString())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@BuyerProfileActivity, "Error fetching balance: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+
 
         binding.tvUploadPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)

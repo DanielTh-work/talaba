@@ -10,5 +10,7 @@ data class Order(
     var deliveryOption: String = "",         // "pickup" or "delivery"
     var deliveryAddress: String = "",
     var deliveryPrice: Double = 0.0,
+    var deliveryVolunteerId: String? = null, // UID of volunteer (same as buyer UID)
+    val rewardPoints: Int = 10,              // default points for delivery
     val timestamp: Long = System.currentTimeMillis()
 )

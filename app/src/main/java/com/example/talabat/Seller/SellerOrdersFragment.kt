@@ -27,6 +27,11 @@ class SellerOrdersFragment : Fragment() {
 
         binding.rvSellerOrders.layoutManager = LinearLayoutManager(requireContext())
 
+        // Set up back button
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack() // go back to previous fragment
+        }
+
         loadOrders()
 
         return binding.root
