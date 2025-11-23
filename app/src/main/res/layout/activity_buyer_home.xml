@@ -111,6 +111,20 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnVoip"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:contentDescription="VoIP Call"
+        android:src="@drawable/ic_phone"
+        app:backgroundTint="#4F7C82"
+        app:tint="#FFFFFF"
+        app:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnCart"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="24dp" />
+
 
     <!-- Floating Cart button (FAB style) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -126,5 +140,6 @@
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
         app:elevation="8dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ class SellerHomeActivity : AppCompatActivity() {
         binding = ActivitySellerHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         auth = FirebaseAuth.getInstance()
         val userUID = auth.currentUser?.uid
 
@@ -63,7 +64,10 @@ class SellerHomeActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
         }
-
+        binding.btnVoip.setOnClickListener {
+            val intent = Intent(this, VoipActivity::class.java)
+            startActivity(intent)
+        }
         // ⭐ Logout Button
         binding.btnLogout.setOnClickListener {
             showLogoutConfirmation()

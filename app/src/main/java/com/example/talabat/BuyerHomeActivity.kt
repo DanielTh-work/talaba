@@ -63,6 +63,11 @@ class BuyerHomeActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+        binding.btnVoip.setOnClickListener {
+            val intent = Intent(this, VoipActivity::class.java)
+            startActivity(intent)
+        }
+
 
         binding.btnCart.setOnClickListener {
             supportFragmentManager.beginTransaction()
