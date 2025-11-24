@@ -15,6 +15,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+
         <TextView
             android:id="@+id/tvOrderTitle"
             android:layout_width="wrap_content"
@@ -23,6 +24,14 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#004F5C"/>
+        <TextView
+            android:id="@+id/tvShopName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shop: Unknown"
+            android:textSize="16sp"
+            android:textColor="#333333"
+            android:layout_marginTop="4dp"/>
 
         <TextView
             android:id="@+id/tvOrderDetails"

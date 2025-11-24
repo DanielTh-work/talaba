@@ -4,9 +4,13 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.media.*
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -29,9 +33,22 @@ class VoipActivity : AppCompatActivity() {
 
     private var callStartTime: Long = 0
     private var callEndTime: Long = 0
-
-    // last time we received a packet
     private var lastPacketTime: Long = 0
+
+    private lateinit var tvTimestamp: TextView
+
+    // live timestamp updater
+    private val timestampHandler = Handler(Looper.getMainLooper())
+    private val timestampRunnable = object : Runnable {
+        override fun run() {
+            if (isCalling) {
+                val elapsed = System.currentTimeMillis() - callStartTime
+                val formatted = formatDuration(elapsed)
+                tvTimestamp.text = "Timestamp: $formatted"
+                timestampHandler.postDelayed(this, 1000)
+            }
+        }
+    }
 
     private val sampleRate = 16000
     private val minBuf = AudioRecord.getMinBufferSize(
@@ -44,10 +61,18 @@ class VoipActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_voip)
 
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish() // returns to previous screen (shops)
+        }
+
         val ipInput = findViewById<EditText>(R.id.ipInput)
         val portInput = findViewById<EditText>(R.id.portInput)
         val btnConnect = findViewById<Button>(R.id.btnConnect)
         val btnHangup = findViewById<Button>(R.id.btnHangup)
+
+        tvTimestamp = findViewById(R.id.tvTimestamp)
+        tvTimestamp.visibility = android.view.View.GONE
 
         checkPermissions()
 
@@ -66,6 +91,14 @@ class VoipActivity : AppCompatActivity() {
         return sdf.format(Date(ms))
     }
 
+    private fun formatDuration(ms: Long): String {
+        val seconds = ms / 1000
+        val h = seconds / 3600
+        val m = (seconds % 3600) / 60
+        val s = seconds % 60
+        return String.format("%02d:%02d:%02d", h, m, s)
+    }
+
     private fun startCall(ip: String, port: Int) {
         if (isCalling) return
 
@@ -74,6 +107,10 @@ class VoipActivity : AppCompatActivity() {
 
         val readableStart = formatTime(callStartTime)
         Toast.makeText(this, "Call started at: $readableStart", Toast.LENGTH_SHORT).show()
+
+        // show timestamp label
+        tvTimestamp.visibility = android.view.View.VISIBLE
+        timestampHandler.post(timestampRunnable)
 
         val remoteAddr = InetAddress.getByName(ip)
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -88,14 +125,13 @@ class VoipActivity : AppCompatActivity() {
             soTimeout = 2000
         }
 
-        // initialize timeout timer
         lastPacketTime = System.currentTimeMillis()
 
-        // TIMEOUT WATCHER: if no packets for 30 sec, end call
+        // TIMEOUT THREAD
         thread {
             while (isCalling) {
                 val elapsed = System.currentTimeMillis() - lastPacketTime
-                if (elapsed > 30000) { // 30 seconds
+                if (elapsed > 30000) {
                     runOnUiThread {
                         Toast.makeText(this, "No one connected", Toast.LENGTH_LONG).show()
                     }
@@ -106,7 +142,7 @@ class VoipActivity : AppCompatActivity() {
             }
         }
 
-        // 🎤 MIC THREAD — send audio
+        // MIC THREAD
         micThread = thread {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED
@@ -146,7 +182,7 @@ class VoipActivity : AppCompatActivity() {
             recorder.release()
         }
 
-        // 🔊 SPEAKER THREAD — receive audio
+        // SPEAKER THREAD
         speakerThread = thread {
             val player = AudioTrack(
                 AudioAttributes.Builder()
@@ -171,10 +207,8 @@ class VoipActivity : AppCompatActivity() {
                     val packet = DatagramPacket(buffer, buffer.size)
                     receiveSocket?.receive(packet)
 
-                    // reset timeout
                     lastPacketTime = System.currentTimeMillis()
 
-                    Log.d("VoIP", "Received ${packet.length} bytes")
                     player.write(packet.data, 0, packet.length)
                 } catch (e: Exception) {
                     Log.e("VoIP", "Receive error: $e")
@@ -200,6 +234,10 @@ class VoipActivity : AppCompatActivity() {
 
         val durationSeconds = (callEndTime - callStartTime) / 1000
         Toast.makeText(this, "Call duration: $durationSeconds seconds", Toast.LENGTH_LONG).show()
+
+        // hide timestamp
+        tvTimestamp.visibility = android.view.View.GONE
+        timestampHandler.removeCallbacks(timestampRunnable)
     }
 
     private fun checkPermissions() {
@@ -214,6 +252,6 @@ class VoipActivity : AppCompatActivity() {
         }
 
         if (missing.isNotEmpty())
-            ActivityCompat.requestPermissions(this, missing.toTypedArray(), 1)
-    }
+            ActivityCompat.requestPermissions(this, missing.toTypedArray(),1)
+        }
 }

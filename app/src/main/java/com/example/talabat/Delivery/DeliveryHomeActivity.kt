@@ -66,7 +66,7 @@ class DeliveryHomeActivity : AppCompatActivity() {
 
         db.child("orders")
             .orderByChild("status")
-            .equalTo("ready")
+            .equalTo("waiting for volunteer")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     orders.clear()

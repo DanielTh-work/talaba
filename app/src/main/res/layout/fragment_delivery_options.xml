@@ -46,10 +46,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:visibility="gone"
-        android:alpha="0.0"
+
         android:background="@drawable/rounded_edittext"
         android:padding="12dp"
         android:contentDescription="Select delivery location"/>
+    <!-- Exact Location Text Field -->
+    <EditText
+        android:id="@+id/etExactLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter exact delivery location"
+        android:visibility="gone"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext"
+        android:layout_marginTop="12dp"/>
+
+
 
     <!-- Delivery Fee display -->
     <TextView

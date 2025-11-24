@@ -1,40 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 🔙 Back Button -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="41dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Back"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#4F7C82" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:text="VoiceConnect"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- IP Address Input -->
     <EditText
         android:id="@+id/ipInput"
         android:hint="Enter IP Address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:drawable/edit_text"
+        android:padding="12dp"
         android:inputType="text"
-        android:padding="12dp" />
+        android:layout_marginBottom="16dp"/>
 
+    <!-- Port Number Input -->
     <EditText
         android:id="@+id/portInput"
         android:hint="Enter Port Number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:background="@android:drawable/edit_text"
         android:padding="12dp"
-        android:layout_marginTop="12dp"/>
+        android:inputType="number"
+        android:layout_marginBottom="20dp"/>
 
+    <!-- Connect Button -->
     <Button
         android:id="@+id/btnConnect"
         android:text="Connect"
-        android:layout_marginTop="20dp"
+        android:textStyle="bold"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"/>
 
+    <!-- Hang Up Button -->
     <Button
         android:id="@+id/btnHangup"
         android:text="Hang Up"
-        android:layout_marginTop="12dp"
+        android:textStyle="bold"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#F44336"
+        android:textColor="#FFFFFF"/>
+
+    <!-- Call Timer -->
+    <TextView
+        android:id="@+id/tvCallTimer"
+        android:text="Call Time: 00:00:00"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timestamp: --:--:--"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
+
 
 </LinearLayout>

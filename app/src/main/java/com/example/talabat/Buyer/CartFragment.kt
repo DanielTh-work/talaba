@@ -12,6 +12,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.example.talabat.models.Order
 import com.example.talabat.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CartFragment : Fragment() {
 
@@ -19,33 +22,32 @@ class CartFragment : Fragment() {
     private val db = FirebaseDatabase.getInstance().reference
     private val auth = FirebaseAuth.getInstance()
 
-    // Delivery data (updated from DeliveryOptionsFragment)
     private var selectedDeliveryOption = "pickup"
     private var selectedDeliveryAddress = ""
     private var selectedDeliveryPrice = 0.0
+    private var selectedDeliveryExactLocation = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentCartBinding.inflate(inflater, container, false)
 
         setupRecycler()
         refreshUI()
 
-        // 🔥 Listen for delivery option result from DeliveryOptionsFragment
+        // Listen for delivery option result
         parentFragmentManager.setFragmentResultListener("deliveryData", viewLifecycleOwner) { _, result ->
-
             selectedDeliveryOption = result.getString("deliveryOption") ?: "pickup"
             selectedDeliveryAddress = result.getString("deliveryAddress") ?: ""
             selectedDeliveryPrice = result.getDouble("deliveryPrice")
+            selectedDeliveryExactLocation = result.getString("deliveryExactLocation") ?: ""
 
-            // After selecting delivery option → create the order
             placeOrderWithDelivery()
         }
 
-        // Back button
         binding.cartToolbar.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -55,7 +57,6 @@ class CartFragment : Fragment() {
             refreshUI()
         }
 
-        // 🔥 Checkout → open DeliveryOptionsFragment
         binding.btnCheckout.setOnClickListener {
             val fragment = DeliveryOptionsFragment()
             requireActivity().supportFragmentManager.beginTransaction()
@@ -69,16 +70,29 @@ class CartFragment : Fragment() {
 
     private fun setupRecycler() {
         binding.recyclerViewCart.layoutManager = LinearLayoutManager(requireContext())
+
         binding.recyclerViewCart.adapter = CartAdapter(
             CartManager.items.toMutableList(),
-            onIncrease = {
-                CartManager.increase(it); refreshUI()
+
+            onIncrease = { cartItem ->
+                val available = cartItem.product.quantity
+                val success = CartManager.increase(cartItem, available)
+
+                if (!success) {
+                    Toast.makeText(requireContext(), "Only $available items available", Toast.LENGTH_SHORT).show()
+                }
+
+                refreshUI()
             },
+
             onDecrease = {
-                CartManager.decrease(it); refreshUI()
+                CartManager.decrease(it)
+                refreshUI()
             },
+
             onRemove = {
-                CartManager.remove(it); refreshUI()
+                CartManager.remove(it)
+                refreshUI()
             }
         )
     }
@@ -86,16 +100,33 @@ class CartFragment : Fragment() {
     private fun refreshUI() {
         binding.recyclerViewCart.adapter = CartAdapter(
             CartManager.items.toMutableList(),
-            onIncrease = { CartManager.increase(it); refreshUI() },
-            onDecrease = { CartManager.decrease(it); refreshUI() },
-            onRemove = { CartManager.remove(it); refreshUI() }
+
+            onIncrease = { cartItem ->
+                val available = cartItem.product.quantity
+                val success = CartManager.increase(cartItem, available)
+
+                if (!success) {
+                    Toast.makeText(requireContext(), "Only $available items available", Toast.LENGTH_SHORT).show()
+                }
+
+                refreshUI()
+            },
+
+            onDecrease = {
+                CartManager.decrease(it)
+                refreshUI()
+            },
+
+            onRemove = {
+                CartManager.remove(it)
+                refreshUI()
+            }
         )
 
         binding.tvTotal.text = "Total: ${CartManager.totalPrice()}"
         binding.btnCheckout.isEnabled = !CartManager.isEmpty()
     }
 
-    // 🔥 NEW Updated Place Order with Delivery Logic
     private fun placeOrderWithDelivery() {
 
         val buyerId = auth.currentUser?.uid ?: run {
@@ -113,7 +144,7 @@ class CartFragment : Fragment() {
 
         itemsBySeller.forEach { (sellerId, cartItems) ->
 
-            val orderId = ordersRef.push().key!!      // ⭐ important – we pass this to tracking
+            val orderId = ordersRef.push().key!!
             val itemsList = mutableListOf<Map<String, Any>>()
             var totalPrice = 0.0
 
@@ -129,6 +160,8 @@ class CartFragment : Fragment() {
                 totalPrice += item.product.price * item.quantity
             }
 
+            val timeNow = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
             val order = Order(
                 orderId = orderId,
                 buyerId = buyerId,
@@ -138,7 +171,8 @@ class CartFragment : Fragment() {
                 status = "waiting",
                 deliveryOption = selectedDeliveryOption,
                 deliveryAddress = selectedDeliveryAddress,
-                deliveryPrice = selectedDeliveryPrice
+                deliveryPrice = selectedDeliveryPrice,
+                deliveryExactLocation = selectedDeliveryExactLocation
             )
 
             ordersRef.child(orderId).setValue(order)
@@ -157,11 +191,9 @@ class CartFragment : Fragment() {
                 }
             }
 
-            // ⭐ Clear cart AFTER saving the first order
             CartManager.clear()
             refreshUI()
 
-            // ⭐ Navigate to OrderTrackingFragment
             val fragment = OrderTrackingFragment.newInstance(orderId)
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_buyer, fragment)
@@ -170,8 +202,7 @@ class CartFragment : Fragment() {
 
             Toast.makeText(requireContext(), "Order placed!", Toast.LENGTH_SHORT).show()
 
-            return  // make sure we exit loop after first seller order
+            return
         }
     }
-
 }

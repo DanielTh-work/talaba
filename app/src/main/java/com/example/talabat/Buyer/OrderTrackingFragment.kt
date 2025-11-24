@@ -43,6 +43,9 @@ class OrderTrackingFragment : Fragment() {
             binding.tvStatus.text = "Invalid order"
             return binding.root
         }
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         dbRef = FirebaseDatabase.getInstance().reference
             .child("orders")
@@ -51,6 +54,7 @@ class OrderTrackingFragment : Fragment() {
         listenForOrderUpdates()
 
         return binding.root
+
     }
 
     private fun sendStatusNotification(status: String) {
@@ -75,15 +79,35 @@ class OrderTrackingFragment : Fragment() {
                 val status = snapshot.child("status").getValue(String::class.java) ?: "waiting"
                 val deliveryOption = snapshot.child("deliveryOption").getValue(String::class.java) ?: ""
                 val address = snapshot.child("deliveryAddress").getValue(String::class.java) ?: ""
+                val exactLocation = snapshot.child("deliveryExactLocation").getValue(String::class.java) ?: ""
                 val totalPrice = snapshot.child("totalPrice").getValue(Double::class.java) ?: 0.0
                 val itemsSnapshot = snapshot.child("items")
                 val sellerId = snapshot.child("sellerId").getValue(String::class.java) ?: ""
 
                 // Update status & delivery info
                 binding.tvStatus.text = "Status: $status"
+
+                // Fetch shop name
+                if (sellerId.isNotEmpty()) {
+                    FirebaseDatabase.getInstance().reference
+                        .child("sellers")
+                        .child(sellerId)
+                        .child("shopName") // Adjust field name to match your database
+                        .get()
+                        .addOnSuccessListener { snap ->
+                            val shopName = snap.getValue(String::class.java) ?: "Unknown Shop"
+                            binding.tvShopName.text = "Shop: $shopName"
+                        }
+                        .addOnFailureListener {
+                            binding.tvShopName.text = "Shop: Unknown"
+                        }
+                } else {
+                    binding.tvShopName.text = "Shop: Unknown"
+                }
+
                 binding.tvDeliveryOption.text = "Delivery Option: $deliveryOption"
                 binding.tvDeliveryAddress.text =
-                    if (deliveryOption == "delivery") "Address: $address"
+                    if (deliveryOption == "delivery") "Address: $address, $exactLocation"
                     else "Pickup from shop"
 
                 // Notification on status change

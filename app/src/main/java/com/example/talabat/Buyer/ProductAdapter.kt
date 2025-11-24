@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.talabat.databinding.ItemProductBuyerBinding
@@ -15,8 +16,7 @@ class ProductAdapter(
     private val onRemoveFromCart: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
-    // Keeps track of quantities locally
-    private val quantities = mutableMapOf<String, Int>() // productId → qty
+    private val quantities = mutableMapOf<String, Int>()  // productId → qty
 
     inner class ProductViewHolder(val binding: ItemProductBuyerBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -27,7 +27,6 @@ class ProductAdapter(
             binding.tvProductPrice.text = "Price: \$${product.price}"
             binding.tvProductQuantity.text = "Qty: ${product.quantity}"
 
-            // Load image
             if (product.imageUrl.isNotEmpty()) {
                 Glide.with(binding.root.context)
                     .load(product.imageUrl)
@@ -43,7 +42,7 @@ class ProductAdapter(
                 return
             }
 
-            // Restore quantity
+            // Restore previous quantity
             val currentQty = quantities[product.id] ?: 0
 
             if (currentQty > 0) {
@@ -55,39 +54,52 @@ class ProductAdapter(
                 binding.qtyLayout.visibility = View.GONE
             }
 
-            // Add to cart
+            // ADD TO CART
             binding.btnAddToCart.setOnClickListener {
                 val qty = 1
                 quantities[product.id] = qty
-                binding.tvQty.text = qty.toString()
 
+                binding.tvQty.text = qty.toString()
                 binding.btnAddToCart.visibility = View.GONE
                 binding.qtyLayout.visibility = View.VISIBLE
 
                 onAddToCart(product, qty)
             }
 
-            // PLUS
+            // PLUS BUTTON WITH STOCK CHECK
             binding.btnPlus.setOnClickListener {
+
                 var qty = quantities[product.id] ?: 1
+
+                if (qty >= product.quantity) {
+                    Toast.makeText(
+                        binding.root.context,
+                        "Only ${product.quantity} items available",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+
                 qty++
                 quantities[product.id] = qty
-
                 binding.tvQty.text = qty.toString()
+
                 onUpdateCart(product, qty)
             }
 
-            // MINUS
+            // MINUS BUTTON
             binding.btnMinus.setOnClickListener {
+
                 var qty = quantities[product.id] ?: 1
 
                 if (qty > 1) {
                     qty--
                     quantities[product.id] = qty
                     binding.tvQty.text = qty.toString()
+
                     onUpdateCart(product, qty)
                 } else {
-                    // Remove completely
+                    // remove from cart
                     quantities.remove(product.id)
                     binding.qtyLayout.visibility = View.GONE
                     binding.btnAddToCart.visibility = View.VISIBLE

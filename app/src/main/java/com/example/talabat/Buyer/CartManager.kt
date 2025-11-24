@@ -1,5 +1,7 @@
 package com.example.talabat.buyer
 
+import android.widget.Toast
+
 object CartManager {
 
     private val _items = mutableListOf<CartItem>()
@@ -49,12 +51,15 @@ object CartManager {
         if (_items.isEmpty()) currentSellerId = null   // unlock seller
     }
 
-    fun increase(item: CartItem) {
-        val p = item.product
-        if (item.quantity < p.quantity) {
-            item.quantity++
+    fun increase(item: CartItem, availableStock: Int): Boolean {
+        if (item.quantity >= availableStock) {
+            return false   // ❌ cannot increase
         }
+        item.quantity++
+        return true        // ✔ allowed
     }
+
+
 
     fun decrease(item: CartItem) {
         if (item.quantity > 1) item.quantity--

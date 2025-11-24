@@ -24,22 +24,17 @@ class SellerOrdersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSellerOrdersBinding.inflate(inflater, container, false)
-
         binding.rvSellerOrders.layoutManager = LinearLayoutManager(requireContext())
-
-        // Set up back button
-        binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack() // go back to previous fragment
-        }
-
         loadOrders()
+        binding.btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         return binding.root
     }
 
     private fun loadOrders() {
         val sellerId = auth.currentUser?.uid ?: return
-
         db.child("orders")
             .orderByChild("sellerId")
             .equalTo(sellerId)
@@ -47,7 +42,6 @@ class SellerOrdersFragment : Fragment() {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     orders.clear()
-
                     for (child in snapshot.children) {
                         val order = child.getValue(Order::class.java)
                         if (order != null) orders.add(order)
@@ -64,7 +58,6 @@ class SellerOrdersFragment : Fragment() {
     }
 
     private fun updateOrderStatus(orderId: String, status: String) {
-
         db.child("orders").child(orderId).child("status").setValue(status)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Status updated: $status", Toast.LENGTH_SHORT).show()

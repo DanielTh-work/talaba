@@ -6,11 +6,15 @@ data class Order(
     val sellerId: String = "",
     val items: List<Map<String, Any>> = emptyList(),
     val totalPrice: Double = 0.0,
-    var status: String = "waiting",          // waiting → preparing → ready → delivered
-    var deliveryOption: String = "",         // "pickup" or "delivery"
+
+    var status: String = "waiting",
+    var deliveryOption: String = "",
     var deliveryAddress: String = "",
+    var deliveryExactLocation: String = "",
+
     var deliveryPrice: Double = 0.0,
-    var deliveryVolunteerId: String? = null, // UID of volunteer (same as buyer UID)
-    val rewardPoints: Int = 10,              // default points for delivery
-    val timestamp: Long = System.currentTimeMillis()
+    var deliveryVolunteerId: String? = null,
+    val rewardPoints: Int = 10,
+
 )
+

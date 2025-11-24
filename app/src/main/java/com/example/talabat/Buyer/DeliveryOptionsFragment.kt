@@ -39,16 +39,12 @@ class DeliveryOptionsFragment : Fragment() {
 
         binding.radioGroupDelivery.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == binding.rbDelivery.id) {
-
                 deliveryOption = "delivery"
 
-                // Show dropdown
                 binding.spinnerAddress.visibility = View.VISIBLE
-                binding.spinnerAddress.alpha = 1f
-
                 binding.tvDeliveryFee.visibility = View.VISIBLE
+                binding.etExactLocation.visibility = View.VISIBLE
 
-                // Calculate initial fee based on first location
                 deliveryPrice = calculateDeliveryPrice()
                 binding.tvDeliveryFee.text = "Delivery Fee: $deliveryPrice EGP"
 
@@ -57,18 +53,26 @@ class DeliveryOptionsFragment : Fragment() {
 
                 binding.spinnerAddress.visibility = View.GONE
                 binding.tvDeliveryFee.visibility = View.GONE
+                binding.etExactLocation.visibility = View.GONE
             }
         }
 
         binding.btnConfirm.setOnClickListener {
             val address = binding.spinnerAddress.selectedItem?.toString() ?: ""
+            val exactLocation = binding.etExactLocation.text.toString().trim()
 
-            if (deliveryOption == "delivery" && address.isEmpty()) {
-                Toast.makeText(requireContext(), "Please select a location", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            if (deliveryOption == "delivery") {
+                if (address.isEmpty()) {
+                    Toast.makeText(requireContext(), "Please select a location", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (exactLocation.isEmpty()) {
+                    Toast.makeText(requireContext(), "Please enter the exact location", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
             }
 
-            sendResult(deliveryOption, address, deliveryPrice)
+            sendResult(deliveryOption, address, deliveryPrice, exactLocation)
         }
     }
 
@@ -77,7 +81,6 @@ class DeliveryOptionsFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerAddress.adapter = adapter
 
-        // Update fee when location changes
         binding.spinnerAddress.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 if (deliveryOption == "delivery") {
@@ -91,7 +94,8 @@ class DeliveryOptionsFragment : Fragment() {
     }
 
     private fun calculateDeliveryPrice(): Double {
-        return when (binding.spinnerAddress.selectedItem.toString()) {
+        val selected = binding.spinnerAddress.selectedItem?.toString() ?: ""
+        return when (selected) {
             "Nasr City" -> 15.0
             "Rehab" -> 20.0
             "5th Settlement" -> 25.0
@@ -102,11 +106,12 @@ class DeliveryOptionsFragment : Fragment() {
         }
     }
 
-    private fun sendResult(option: String, address: String, fee: Double) {
+    private fun sendResult(option: String, address: String, fee: Double, exactLocation: String) {
         val bundle = Bundle().apply {
             putString("deliveryOption", option)
             putString("deliveryAddress", address)
             putDouble("deliveryPrice", fee)
+            putString("deliveryExactLocation", exactLocation)
         }
 
         parentFragmentManager.setFragmentResult("deliveryData", bundle)
